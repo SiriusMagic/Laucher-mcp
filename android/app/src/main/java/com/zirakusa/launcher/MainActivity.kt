@@ -60,13 +60,19 @@ class MainActivity : ComponentActivity() {
             info = { start(PhoneApps.info(it.pkg)) }, uninstall = { start(PhoneApps.uninstall(it.pkg)) },
             clock = { start(PhoneApps.clock(this)) }, calendar = { start(PhoneApps.calendar(this)) },
             wallpaper = { start(Intent.createChooser(Intent(Intent.ACTION_SET_WALLPAPER), getString(R.string.wallpaper_change))) },
-            makeDefault = ::makeDefault, toast = { Toast.makeText(this, it, Toast.LENGTH_SHORT).show() }, copy = ::copy, goToHub = ::goToHub)
+            systemSettings = { start(Intent(Settings.ACTION_SETTINGS)) }, makeDefault = ::makeDefault, toast = { Toast.makeText(this, it, Toast.LENGTH_SHORT).show() }, copy = ::copy, goToHub = ::goToHub)
         setContent {
             HomeTheme(state.themeMode, state.accent) {
                 val light = HomeColors.isLight && !(state.wallpaper && state.page == Page.HOME)
                 SideEffect { WindowCompat.getInsetsController(window, window.decorView).run { isAppearanceLightStatusBars = light; isAppearanceLightNavigationBars = light } }
                 BackHandler(state.page != Page.HOME) {
-                    when (state.page) { Page.HIDDEN, Page.MCP -> state.page = Page.SETTINGS; Page.WELCOME -> state.finishWelcome(); else -> state.home() }
+                    when {
+                        state.page == Page.HIDDEN || state.page == Page.MCP -> state.page = Page.SETTINGS
+                        state.page == Page.CARDS -> state.page = state.cardsBack
+                        state.page == Page.SETTINGS && state.section != com.zirakusa.launcher.ui.screens.Section.MENU -> state.section = com.zirakusa.launcher.ui.screens.Section.MENU
+                        state.page == Page.WELCOME -> state.finishWelcome()
+                        else -> state.home()
+                    }
                 }
                 LauncherApp(state, actions)
             }

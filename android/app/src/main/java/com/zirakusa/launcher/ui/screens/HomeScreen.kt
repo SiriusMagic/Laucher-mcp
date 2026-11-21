@@ -95,7 +95,8 @@ import java.time.format.DateTimeFormatter
                 DropdownMenuItem({ Text(stringResource(R.string.wallpaper_change)) }, { menu = false; actions.wallpaper() },
                     leadingIcon = { Icon(Icons.Outlined.Wallpaper, null) })
                 DropdownMenuItem({ Text(stringResource(R.string.today_page)) }, { menu = false; state.page = Page.FEED })
-                DropdownMenuItem({ Text(stringResource(R.string.settings)) }, { menu = false; state.page = Page.SETTINGS })
+                DropdownMenuItem({ Text(stringResource(R.string.edit_view)) }, { menu = false; state.editCards(Page.HOME) })
+                DropdownMenuItem({ Text(stringResource(R.string.settings)) }, { menu = false; state.section = com.zirakusa.launcher.ui.screens.Section.MENU; state.page = Page.SETTINGS })
             }
         }
     }

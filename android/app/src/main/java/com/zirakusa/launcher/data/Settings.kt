@@ -37,6 +37,8 @@ class Settings(private val kv: KeyValues) {
     var onboarded: Boolean get() = flag("onboarded", false); set(v) = setFlag("onboarded", v)
     var counts: Map<String, Int> get() = Usage.parse(kv.get("counts")); set(v) = kv.put("counts", Usage.serialize(v))
     var recent: List<String> get() = list("recent"); set(v) = kv.put("recent", v.joinToString("\n"))
+    /** «Editar esta vista»: the cards of «Hoy», in order, shown or not. */
+    var layout: List<Slot> get() = Cards.parse(kv.get("hoy")); set(v) = kv.put("hoy", Cards.serialize(v))
     var theme: String? get() = kv.get("theme"); set(v) = kv.put("theme", v)
     var accent: String? get() = kv.get("accent"); set(v) = kv.put("accent", v)
 

@@ -85,6 +85,8 @@ class ScreenshotsTest {
         show()
         state.page = Page.SETTINGS
         compose.onNodeWithText("Modo MCP").assertExists()
+        shot("settings-menu")
+        compose.onNodeWithText("Cajón de apps").performClick()
         compose.onNodeWithText("5").performClick()
         assertEquals(5, state.columns)
         shot("settings")
@@ -121,6 +123,13 @@ class ScreenshotsTest {
         compose.onNodeWithText("Buenos días").assertExists()
         compose.onNodeWithText("09:00 Reunión de equipo").assertExists()
         shot("today")
+        state.page = Page.CARDS
+        compose.onNodeWithText("Documentos").assertExists()
+        shot("cards")
+        state.showCard("frequent", false); state.showCard("recent", false); state.moveCard("documents", -3)
+        state.page = Page.FEED
+        compose.onNodeWithText("Documentos").assertExists()
+        shot("today-preview")
         state.openDrawer()
         compose.onNodeWithText("Recientes").assertExists()
         shot("drawer-recent")

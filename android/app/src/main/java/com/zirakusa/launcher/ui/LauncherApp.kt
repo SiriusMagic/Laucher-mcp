@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import com.zirakusa.launcher.data.AppEntry
 import com.zirakusa.launcher.data.FamilyCard
 import com.zirakusa.launcher.ui.screens.AppMenu
+import com.zirakusa.launcher.ui.screens.CardsScreen
 import com.zirakusa.launcher.ui.screens.DrawerScreen
 import com.zirakusa.launcher.ui.screens.FeedScreen
 import com.zirakusa.launcher.ui.screens.WelcomeScreen
@@ -26,6 +27,7 @@ class AppActions(
     val clock: () -> Unit = {},
     val calendar: () -> Unit = {},
     val wallpaper: () -> Unit = {},
+    val systemSettings: () -> Unit = {},
     val makeDefault: () -> Unit = {},
     val toast: (Int) -> Unit = {},
     val copy: (String) -> Unit = {},
@@ -38,6 +40,7 @@ class AppActions(
     when (state.page) {
         Page.HOME -> HomeScreen(state, actions)
         Page.FEED -> FeedScreen(state, actions)
+        Page.CARDS -> CardsScreen(state)
         Page.WELCOME -> WelcomeScreen(state, actions)
         Page.DRAWER -> DrawerScreen(state, actions)
         Page.SETTINGS -> SettingsScreen(state, actions)

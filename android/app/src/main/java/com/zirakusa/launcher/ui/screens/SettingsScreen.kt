@@ -1,6 +1,23 @@
 package com.zirakusa.launcher.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.outlined.Apps
+import androidx.compose.material.icons.outlined.Dashboard
+import androidx.compose.material.icons.outlined.Hub
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Palette
+import androidx.compose.material.icons.outlined.PhoneAndroid
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Wallpaper
+import androidx.compose.material3.Icon
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -49,60 +66,80 @@ import java.util.Locale
 
 @Composable fun Divider() = androidx.compose.material3.HorizontalDivider(Modifier.padding(horizontal = 20.dp), color = HomeColors.Chip)
 
-/** «Ajustes»: default home app, home screen, drawer, hidden apps, Modo MCP, Temas, privacy and version. */
+/** A category of «Ajustes de Inicio». */
+enum class Section { MENU, HOME, DRAWER, THEMES, ABOUT }
+
+/** «Ajustes de Inicio»: a list of categories with their icons (like the phone's own settings); each opens its page. */
 @Composable fun SettingsScreen(state: HomeState, actions: AppActions) {
     var privacy by remember { mutableStateOf(false) }
+    val section = state.section
     Column(Modifier.fillMaxSize().background(HomeColors.Background).systemBarsPadding().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        PageTop(stringResource(R.string.settings)) { state.page = Page.HOME }
-        Group {
-            Item(stringResource(R.string.default_home), stringResource(if (state.isDefault) R.string.default_yes else R.string.default_no), onClick = actions.makeDefault)
-            Divider()
-            Item(stringResource(R.string.welcome_again), null) { state.step = 0; state.picked = state.dock; state.page = Page.WELCOME }
-        }
-        Caption(stringResource(R.string.home_screen))
-        Group {
-            SwitchItem(stringResource(R.string.show_clock), stringResource(R.string.show_clock_hint), state.showClock, onChange = state::changeClock)
-            Divider()
-            SwitchItem(stringResource(R.string.use_wallpaper), null, state.wallpaper, onChange = state::changeWallpaper)
-            Divider()
-            Item(stringResource(R.string.wallpaper_change), null, onClick = actions.wallpaper)
-        }
-        Caption(stringResource(R.string.drawer))
-        Group {
-            Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                Text(stringResource(R.string.columns), fontSize = 18.sp)
-                Segmented(Settings.COLUMNS.map { it.toString() }, Settings.COLUMNS.indexOf(state.columns), Modifier.fillMaxWidth()) { state.changeColumns(Settings.COLUMNS[it]) }
+        PageTop(stringResource(when (section) { Section.MENU -> R.string.settings; Section.HOME -> R.string.home_screen; Section.DRAWER -> R.string.drawer
+            Section.THEMES -> R.string.themes; Section.ABOUT -> R.string.about })) { if (section == Section.MENU) state.page = Page.HOME else state.section = Section.MENU }
+        when (section) {
+            Section.MENU -> {
+                if (!state.isDefault) Group { Item(stringResource(R.string.default_home), stringResource(R.string.default_no), onClick = actions.makeDefault) }
+                Category(Icons.Outlined.Settings, Color(0xFF4F8DF7), R.string.cat_system, R.string.cat_system_hint, onClick = actions.systemSettings)
+                Category(Icons.Outlined.Wallpaper, Color(0xFFE8685A), R.string.wallpaper_change, R.string.cat_wallpaper_hint, onClick = actions.wallpaper)
+                Category(Icons.Outlined.Palette, Color(0xFFF2B33D), R.string.themes, R.string.cat_themes_hint) { state.section = Section.THEMES }
+                Category(Icons.Outlined.PhoneAndroid, Color(0xFFB57BEE), R.string.home_screen, R.string.cat_home_hint) { state.section = Section.HOME }
+                Category(Icons.Outlined.Apps, Color(0xFFF59E42), R.string.drawer, R.string.cat_drawer_hint) { state.section = Section.DRAWER }
+                Category(Icons.Outlined.Dashboard, Color(0xFFEB4D3D), R.string.cat_today, R.string.cat_today_hint) { state.editCards(Page.SETTINGS) }
+                val status = when {
+                    !McpMode.active -> stringResource(R.string.mcp_status_off)
+                    McpMode.hubRedirect -> stringResource(R.string.mcp_redirect)
+                    McpMode.state == RelayLink.State.ONLINE -> stringResource(R.string.mcp_online)
+                    McpMode.state == RelayLink.State.CONNECTING -> stringResource(R.string.mcp_connecting)
+                    else -> stringResource(R.string.mcp_offline)
+                }
+                Category(Icons.Outlined.Hub, Color(0xFF2BB673), R.string.mcp_title, null, "$status · ${stringResource(R.string.mcp_settings_hint)}") { state.page = Page.MCP }
+                Category(Icons.Outlined.Info, Color(0xFF8C93A3), R.string.about, R.string.cat_about_hint) { state.section = Section.ABOUT }
             }
-            Divider()
-            SwitchItem(stringResource(R.string.family_first), stringResource(R.string.family_first_hint), state.familyFirst, onChange = state::changeFamilyFirst)
-            Divider()
-            SwitchItem(stringResource(R.string.show_recent), null, state.showRecent, onChange = state::changeShowRecent)
-            Divider()
-            Item(stringResource(R.string.hidden_apps), state.hidden.size.toString()) { state.page = Page.HIDDEN }
-        }
-        Group {
-            val status = when {
-                !McpMode.active -> stringResource(R.string.mcp_status_off)
-                McpMode.hubRedirect -> stringResource(R.string.mcp_redirect)
-                McpMode.state == RelayLink.State.ONLINE -> stringResource(R.string.mcp_online)
-                McpMode.state == RelayLink.State.CONNECTING -> stringResource(R.string.mcp_connecting)
-                else -> stringResource(R.string.mcp_offline)
+            Section.HOME -> Group {
+                Item(stringResource(R.string.default_home), stringResource(if (state.isDefault) R.string.default_yes else R.string.default_no), onClick = actions.makeDefault)
+                Divider()
+                SwitchItem(stringResource(R.string.show_clock), stringResource(R.string.show_clock_hint), state.showClock, onChange = state::changeClock)
+                Divider()
+                SwitchItem(stringResource(R.string.use_wallpaper), null, state.wallpaper, onChange = state::changeWallpaper)
+                Divider()
+                Item(stringResource(R.string.welcome_again), null) { state.step = 0; state.picked = state.dock; state.page = Page.WELCOME }
             }
-            Item(stringResource(R.string.mcp_title), "$status · ${stringResource(R.string.mcp_settings_hint)}") { state.page = Page.MCP }
-        }
-        ThemeCard(state.themeMode, state.accent, state::changeTheme, state::changeAccent)
-        Caption(stringResource(R.string.about))
-        Group {
-            Item(stringResource(R.string.privacy), null) { privacy = true }
-            Divider()
-            Item(stringResource(R.string.version_title), BuildConfig.VERSION_NAME, onClick = null)
+            Section.DRAWER -> Group {
+                Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Text(stringResource(R.string.columns), fontSize = 18.sp)
+                    Segmented(Settings.COLUMNS.map { it.toString() }, Settings.COLUMNS.indexOf(state.columns), Modifier.fillMaxWidth()) { state.changeColumns(Settings.COLUMNS[it]) }
+                }
+                Divider()
+                SwitchItem(stringResource(R.string.family_first), stringResource(R.string.family_first_hint), state.familyFirst, onChange = state::changeFamilyFirst)
+                Divider()
+                SwitchItem(stringResource(R.string.show_recent), null, state.showRecent, onChange = state::changeShowRecent)
+                Divider()
+                Item(stringResource(R.string.hidden_apps), state.hidden.size.toString()) { state.page = Page.HIDDEN }
+            }
+            Section.THEMES -> ThemeCard(state.themeMode, state.accent, state::changeTheme, state::changeAccent)
+            Section.ABOUT -> Group {
+                Item(stringResource(R.string.privacy), null) { privacy = true }
+                Divider()
+                Item(stringResource(R.string.version_title), BuildConfig.VERSION_NAME, onClick = null)
+            }
         }
         Text("", Modifier.padding(bottom = 16.dp))
     }
     if (privacy) AlertDialog({ privacy = false }, confirmButton = { TextButton({ privacy = false }) { Text(stringResource(R.string.done), color = HomeColors.AccentText) } },
         title = { Text(stringResource(R.string.privacy)) }, text = { Text(stringResource(R.string.privacy_text)) })
 }
+
+/** One category: a coloured round icon, its name and what is inside. */
+@Composable private fun Category(icon: ImageVector, tint: Color, title: Int, hint: Int?, hintText: String? = null, onClick: () -> Unit) =
+    Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(20.dp)).clickable(onClick = onClick).padding(vertical = 10.dp, horizontal = 4.dp),
+        verticalAlignment = Alignment.CenterVertically) {
+        Box(Modifier.size(46.dp).clip(CircleShape).background(tint.copy(alpha = 0.18f)), contentAlignment = Alignment.Center) { Icon(icon, null, tint = tint) }
+        Column(Modifier.padding(start = 18.dp)) {
+            Text(stringResource(title), fontSize = 18.sp)
+            Text(hintText ?: stringResource(hint!!), color = HomeColors.Muted, fontSize = 14.sp)
+        }
+    }
 
 /** «Apps ocultas»: each with «Mostrar». */
 @Composable fun HiddenScreen(state: HomeState, actions: com.zirakusa.launcher.ui.AppActions) =

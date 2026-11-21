@@ -6,7 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.zirakusa.launcher.data.AppEntry
 import com.zirakusa.launcher.data.Apps
+import com.zirakusa.launcher.data.Cards
 import com.zirakusa.launcher.data.Dock
+import com.zirakusa.launcher.data.Slot
 import com.zirakusa.launcher.data.FamilyCard
 import com.zirakusa.launcher.data.Greeting
 import com.zirakusa.launcher.data.Usage
@@ -17,7 +19,7 @@ import com.zirakusa.launcher.ui.theme.ThemeMode
 import java.time.LocalDateTime
 
 /** Where the user is. */
-enum class Page { HOME, FEED, DRAWER, SETTINGS, HIDDEN, MCP, WELCOME }
+enum class Page { HOME, FEED, CARDS, DRAWER, SETTINGS, HIDDEN, MCP, WELCOME }
 
 /**
  * The only owner of what the screens show: the phone's apps, the dock, the hidden apps, the drawer's search and the
@@ -36,6 +38,12 @@ class HomeState(values: KeyValues, private val clock: () -> LocalDateTime = Loca
     var showRecent by mutableStateOf(settings.showRecent); private set
     /** «Hoy»: the family apps' cards, read when «Hoy» opens. */
     var cards by mutableStateOf(emptyList<FamilyCard>())
+    /** «Hoy»: the order of the cards and which show. */
+    var slots by mutableStateOf(settings.layout); private set
+    /** The category of «Ajustes» that is open. */
+    var section by mutableStateOf(com.zirakusa.launcher.ui.screens.Section.MENU)
+    /** The page «Editar esta vista» goes back to. */
+    var cardsBack = Page.FEED
     var apps by mutableStateOf(emptyList<AppEntry>()); private set
     var dock by mutableStateOf(settings.dock.orEmpty()); private set
     var hidden by mutableStateOf(settings.hidden); private set
@@ -68,9 +76,19 @@ class HomeState(values: KeyValues, private val clock: () -> LocalDateTime = Loca
         dock = Dock.clean(saved, keys)
         if (dock != saved) settings.dock = dock
         if (page == Page.WELCOME && picked.isEmpty()) picked = dock
+        slots = Cards.layout(settings.layout, list)
     }
+    /** A tool changed «Hoy». */
+    fun reloadCards() { slots = Cards.layout(settings.layout, apps) }
+
+    /** The packages whose card is live (they answered with a summary). */
+    val livePackages: Set<String> get() = cards.map { it.app.pkg }.toSet()
+    fun showCard(id: String, visible: Boolean) = putSlots(Cards.show(slots, id, visible))
+    fun moveCard(id: String, by: Int) = putSlots(Cards.move(slots, id, slots.indexOfFirst { it.id == id } + by))
+    private fun putSlots(next: List<Slot>) { slots = next; settings.layout = next }
+    fun editCards(from: Page) { cardsBack = from; page = Page.CARDS }
     /** A tool changed the dock. */
-    fun reload() { dock = Dock.clean(settings.dock.orEmpty(), apps.map { it.key }.toSet()); hidden = settings.hidden }
+    fun reload() { dock = Dock.clean(settings.dock.orEmpty(), apps.map { it.key }.toSet()); hidden = settings.hidden; reloadCards() }
 
     private val byKey get() = apps.associateBy { it.key }
     val dockApps: List<AppEntry> get() = dock.mapNotNull { byKey[it] }

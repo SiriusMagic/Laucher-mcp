@@ -2,7 +2,10 @@ package com.zirakusa.launcher
 
 import com.zirakusa.launcher.data.AppEntry
 import com.zirakusa.launcher.data.Apps
+import com.zirakusa.launcher.data.CardStatus
+import com.zirakusa.launcher.data.Cards
 import com.zirakusa.launcher.data.Dock
+import com.zirakusa.launcher.data.Slot
 import com.zirakusa.launcher.data.FamilyCard
 import com.zirakusa.launcher.data.Greeting
 import com.zirakusa.launcher.data.Usage
@@ -106,5 +109,26 @@ class LauncherTest {
         assertEquals(Page.HOME, HomeState(kv).page)                                    // only the first time
         state.launched(camara); state.launched(camara)
         assertEquals(listOf(camara), HomeState(kv).also { it.load(apps) }.frequent)
+    }
+
+    @Test fun todayLayout() {
+        val withSummary = apps + AppEntry("com.zirakusa.stone", "Main", "Stone", "music_", "com.zirakusa.stone.summary")
+        val ids = Cards.ids(listOf("com.zirakusa.reloj", "com.zirakusa.stone"))
+        assertEquals(listOf("clock", "calendar", "notes", "documents", "frequent", "recent", "app:com.zirakusa.stone"), ids)
+        assertEquals(ids, Cards.layout(emptyList(), withSummary).map { it.id })
+        val saved = listOf(Slot("recent"), Slot("gone", false), Slot("clock", false))
+        val merged = Cards.merge(saved, ids)
+        assertEquals(listOf("recent", "clock", "calendar"), merged.take(3).map { it.id }); assertFalse(merged[1].visible)
+        assertEquals("clock", Cards.move(merged, "clock", 0).first().id)
+        assertEquals("recent", Cards.move(merged, "recent", 99).last().id)
+        assertTrue(Cards.show(merged, "clock", true)[1].visible)
+        assertEquals(merged, Cards.parse(Cards.serialize(merged)))
+        assertEquals("com.zirakusa.filem", Cards.pkgOf("documents")); assertEquals("com.x", Cards.pkgOf("app:com.x")); assertNull(Cards.pkgOf("frequent"))
+        assertEquals(CardStatus.LIVE, Cards.status("clock", setOf("com.zirakusa.reloj")))
+        assertEquals(CardStatus.PREVIEW, Cards.status("notes", setOf("com.zirakusa.reloj")))
+        assertEquals(CardStatus.LIVE, Cards.status("frequent", emptySet()))
+        val state = HomeState(MapValues()).also { it.load(apps) }
+        state.moveCard("recent", -10); state.showCard("notes", false)
+        assertEquals("recent", state.slots.first().id); assertFalse(state.slots.first { it.id == "notes" }.visible)
     }
 }

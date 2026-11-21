@@ -2,7 +2,9 @@ package com.zirakusa.launcher.mcp
 
 import com.zirakusa.launcher.data.AppEntry
 import com.zirakusa.launcher.data.Apps
+import com.zirakusa.launcher.data.Cards
 import com.zirakusa.launcher.data.Dock
+import com.zirakusa.launcher.data.Slot
 import com.zirakusa.launcher.data.FamilyCard
 import org.json.JSONArray
 import org.json.JSONObject
@@ -17,6 +19,9 @@ interface LauncherData {
     fun cards(): List<FamilyCard>
     /** The apps opened most (counted on the phone only). */
     fun frequent(): List<AppEntry>
+    /** «Hoy»: the cards in order, shown or not. */
+    fun slots(): List<Slot>
+    fun setSlots(slots: List<Slot>)
 }
 
 /** An expected failure the AI can read (structuredContent.error.code), never a crash. */
@@ -42,6 +47,12 @@ object LauncherTools {
                 "family_only" to prop("boolean", "Only the family apps (they speak MCP)."))),
         Tool("launcher_today", "The user's day as Inicio's «Hoy» shows it: one card per family app that has something to say (e.g. Reloj: " +
             "the next alarm; Calendario: today's events), then the apps opened most. Each card names its app and MCP module.", false, schema(emptyList())),
+        Tool("launcher_cards", "The cards of «Hoy», in order: id (clock, calendar, notes, documents, frequent, recent or app:<package>), " +
+            "whether each is shown, and its status: live (its app gives a summary) or preview (its app is missing or has no summary yet).",
+            false, schema(emptyList())),
+        Tool("launcher_card_set", "Shows or hides a card of «Hoy» and/or moves it to a position (0 = top).", true,
+            schema(listOf("id"), "id" to prop("string", "The card's id (from launcher_cards)."), "visible" to prop("boolean", "Show it."),
+                "position" to prop("integer", "Its new place, 0 = top."))),
         Tool("launcher_dock", "The apps in the dock at the bottom of the home screen, in order (up to ${Dock.MAX}).", false, schema(emptyList())),
         Tool("launcher_dock_add", "Adds an app to the end of the dock (nothing when it is already there).", true, schema(listOf("package"), pkg)),
         Tool("launcher_dock_remove", "Removes an app from the dock (the app stays installed).", true, schema(listOf("package"), pkg)),
@@ -59,6 +70,20 @@ object LauncherTools {
         return when (name) {
             "launcher_apps" -> apps(args, data)
             "launcher_dock" -> dock(data)
+            "launcher_cards" -> cards(data)
+            "launcher_card_set" -> {
+                val id = (args.opt("id") as? String)?.trim()?.takeIf { it.isNotEmpty() && it.length <= 200 } ?: throw ToolFailure("BAD_ARGUMENT", "id must be text.")
+                val visible = if (!args.has("visible")) null else args.opt("visible") as? Boolean ?: throw ToolFailure("BAD_ARGUMENT", "visible must be true or false.")
+                val position = if (!args.has("position")) null else (args.opt("position") as? Int)?.takeIf { it >= 0 }
+                    ?: throw ToolFailure("BAD_ARGUMENT", "position must be an integer from 0.")
+                if (visible == null && position == null) throw ToolFailure("BAD_ARGUMENT", "Give visible, position or both.")
+                var slots = data.slots()
+                if (slots.none { it.id == id }) throw ToolFailure("NOT_FOUND", "No card «$id».")
+                if (visible != null) slots = Cards.show(slots, id, visible)
+                if (position != null) slots = Cards.move(slots, id, position)
+                data.setSlots(slots)
+                cards(data)
+            }
             "launcher_today" -> JSONObject().put("cards", JSONArray(data.cards().map { c ->
                 JSONObject().put("app", c.app.label).put("package", c.app.pkg).put("mcp_module", c.app.module ?: JSONObject.NULL)
                     .put("title", c.title).put("lines", JSONArray(c.lines)).put("empty", c.empty)
@@ -85,6 +110,17 @@ object LauncherTools {
         val found = if (query.isBlank()) Apps.sorted(all) else Apps.search(all, query)
         val dock = data.dock().toSet(); val hidden = data.hidden()
         return JSONObject().put("total", found.size).put("apps", JSONArray(found.take(300).map { describe(it, it.key in dock, it.key in hidden) }))
+    }
+
+    private fun cards(data: LauncherData): JSONObject {
+        val live = data.cards().map { it.app.pkg }.toSet()
+        val apps = data.apps()
+        return JSONObject().put("cards", JSONArray(data.slots().mapIndexed { i, s ->
+            val pkg = Cards.pkgOf(s.id)
+            JSONObject().put("id", s.id).put("position", i).put("visible", s.visible)
+                .put("status", Cards.status(s.id, live).name.lowercase())
+                .put("app", pkg?.let { p -> apps.firstOrNull { it.pkg == p }?.label } ?: JSONObject.NULL)
+        }))
     }
 
     private fun dock(data: LauncherData): JSONObject {

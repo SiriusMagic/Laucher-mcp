@@ -1,7 +1,9 @@
 package com.zirakusa.launcher
 
 import com.zirakusa.launcher.data.AppEntry
+import com.zirakusa.launcher.data.Cards
 import com.zirakusa.launcher.data.FamilyCard
+import com.zirakusa.launcher.data.Slot
 import com.zirakusa.launcher.mcp.Access
 import com.zirakusa.launcher.mcp.HubLink
 import com.zirakusa.launcher.mcp.Kind
@@ -33,6 +35,9 @@ class McpTest {
         override fun hidden() = setOf("com.maps/com.maps.Main")
         override fun cards() = listOf(FamilyCard(list[0], "Reloj", listOf("Próxima alarma: lun 6:02 a. m."), "Ninguna alarma activa"))
         override fun frequent() = listOf(list[3])
+        var layout = Cards.layout(emptyList(), list)
+        override fun slots() = layout
+        override fun setSlots(slots: List<Slot>) { layout = slots }
     }
     private val writer = Token("w", "Claude", "ini_" + "w".repeat(40), Access.WRITE, Kind.HUB, "Casa")
     private val reader = Token("r", "Lector", "ini_" + "r".repeat(40), Access.READ)
@@ -52,8 +57,8 @@ class McpTest {
     private fun dockPackages(o: JSONObject) = o.getJSONArray("dock").let { a -> (0 until a.length()).map { a.getJSONObject(it).getString("package") } }
 
     @Test fun listsTheTools() {
-        assertEquals(listOf("launcher_apps", "launcher_today", "launcher_dock", "launcher_dock_add", "launcher_dock_remove"), names(writer))
-        assertEquals(listOf("launcher_apps", "launcher_today", "launcher_dock"), names(reader))
+        assertEquals(listOf("launcher_apps", "launcher_today", "launcher_cards", "launcher_card_set", "launcher_dock", "launcher_dock_add", "launcher_dock_remove"), names(writer))
+        assertEquals(listOf("launcher_apps", "launcher_today", "launcher_cards", "launcher_dock"), names(reader))
         assertEquals("inicio", rpc(writer, "initialize").getJSONObject("serverInfo").getString("name"))
     }
 
@@ -102,5 +107,21 @@ class McpTest {
         assertTrue(Token.secret().startsWith("ini_"))
         assertEquals("NOT_SAME_DEVELOPER", HubLink.answer(false).getString("error"))
         assertEquals("REDIRECT_OFF", HubLink.answer(true).getString("error"))
+    }
+
+    @Test fun arrangesToday() {
+        val cards = ok("launcher_cards").getJSONArray("cards")
+        assertEquals(listOf("clock", "calendar", "notes", "documents", "frequent", "recent"), (0 until cards.length()).map { cards.getJSONObject(it).getString("id") })
+        assertEquals("live", cards.getJSONObject(0).getString("status")); assertEquals("preview", cards.getJSONObject(2).getString("status"))
+        assertEquals("Reloj", cards.getJSONObject(0).getString("app"))
+        val moved = ok("launcher_card_set", JSONObject().put("id", "frequent").put("position", 0).put("visible", false)).getJSONArray("cards").getJSONObject(0)
+        assertEquals("frequent", moved.getString("id")); assertFalse(moved.getBoolean("visible"))
+        assertEquals(Slot("frequent", false), data.layout.first())
+        assertEquals("NOT_FOUND", code("launcher_card_set", JSONObject().put("id", "weather").put("visible", true)))
+        assertEquals("BAD_ARGUMENT", code("launcher_card_set", JSONObject().put("id", "clock")))
+        assertEquals("BAD_ARGUMENT", code("launcher_card_set", JSONObject().put("id", "clock").put("position", -1)))
+        assertEquals("BAD_ARGUMENT", code("launcher_card_set", JSONObject().put("id", "clock").put("visible", "no")))
+        assertEquals("READ_ONLY", code("launcher_card_set", JSONObject().put("id", "clock").put("visible", false), reader))
+        assertTrue(data.layout.first { it.id == "clock" }.visible)
     }
 }

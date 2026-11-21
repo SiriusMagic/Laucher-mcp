@@ -9,7 +9,9 @@ import androidx.compose.runtime.setValue
 import androidx.core.content.edit
 import com.zirakusa.launcher.PhoneApps
 import com.zirakusa.launcher.BuildConfig
+import com.zirakusa.launcher.data.Cards
 import com.zirakusa.launcher.data.Settings
+import com.zirakusa.launcher.data.Slot
 import com.zirakusa.launcher.data.Usage
 import com.zirakusa.launcher.data.SharedValues
 
@@ -23,7 +25,7 @@ object McpMode {
     var hubRedirect by mutableStateOf(false); private set
     var tokens by mutableStateOf(emptyList<Token>()); private set
     var state by mutableStateOf(RelayLink.State.OFFLINE); private set
-    /** Called on the main thread after a tool changed the dock, so the screen reloads it. */
+    /** Called on the main thread after a tool changed the dock or «Hoy», so the screen reloads them. */
     var onChanged: () -> Unit = {}
 
     private var prefs: android.content.SharedPreferences? = null
@@ -98,4 +100,6 @@ class LiveData(private val context: Context) : LauncherData {
     override fun hidden() = settings.hidden
     override fun cards() = PhoneApps.summaries(context, apps())
     override fun frequent() = Usage.frequent(settings.counts, apps(), settings.hidden)
+    override fun slots() = Cards.layout(settings.layout, apps())
+    override fun setSlots(slots: List<Slot>) { settings.layout = slots; main.post { McpMode.onChanged() } }
 }

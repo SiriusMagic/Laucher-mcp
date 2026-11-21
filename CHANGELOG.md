@@ -1,3 +1,16 @@
+# Inicio 0.3.0
+
+- **Editar esta vista** («Hoy»): activar, ocultar y ordenar las tarjetas (Reloj, Calendario, Notas, Documentos, Apps
+  frecuentes, Recientes y cualquier app de la familia con resumen). Desde el botón al final de «Hoy», el «⋯» de cada
+  tarjeta (Ocultar tarjeta / Editar esta vista), mantener pulsado el inicio, o Ajustes › Hoy.
+- **Vista previa**: las tarjetas cuya app falta o aún no da resumen se muestran como vista previa de lo que vendrá
+  (Notas: tus últimas notas; Documentos: tus documentos recientes, con Filem).
+- **Ajustes de Inicio** por categorías con icono: Configuración del sistema, Fondo, Temas, Pantalla de inicio, Cajón,
+  Hoy, Modo MCP y Acerca de.
+- **MCP**: `launcher_cards` (las tarjetas de «Hoy», en vivo o vista previa) y `launcher_card_set` (mostrar, ocultar y
+  mover; con token de lectura y escritura). Tu IA puede organizar «Hoy» y el dock.
+- 14 pruebas.
+
 # Inicio 0.2.0
 
 - **Bienvenida** la primera vez (4 pasos, «Omitir» siempre): qué es Inicio y que no pide ubicación, fotos, archivos ni
