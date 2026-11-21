@@ -9,6 +9,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.zirakusa.launcher.data.AppEntry
+import com.zirakusa.launcher.data.FamilyCard
 import com.zirakusa.launcher.data.MapValues
 import com.zirakusa.launcher.ui.AppActions
 import com.zirakusa.launcher.ui.HomeState
@@ -33,7 +34,10 @@ class ScreenshotsTest {
     @get:Rule val compose = createComposeRule()
     private val state by lazy { HomeState(MapValues()) { LocalDateTime.of(2026, 11, 21, 9, 41) } }
     private val opened = mutableListOf<String>()
-    private val actions = AppActions(open = { opened += it.pkg })
+    private val actions = AppActions(open = { opened += it.pkg; state.launched(it) }, cards = { list ->
+        listOf(FamilyCard(list.first { it.pkg == "com.zirakusa.reloj" }, "Reloj", listOf("Próxima alarma: lun 6:02 a. m.", "Temporizador: quedan 04:12"), ""),
+            FamilyCard(list.first { it.pkg == "com.zirakusa.calendario" }, "Hoy en tu calendario", listOf("09:00 Reunión de equipo", "Todo el día · Viaje a Cuenca"), ""))
+    })
     private fun app(label: String, pkg: String, module: String? = null) = AppEntry(pkg, "$pkg.Main", label, module)
     private val apps = listOf(app("Reloj", "com.zirakusa.reloj", "clock_"), app("Calendario", "com.zirakusa.calendario", "calendar_"),
         app("Notas", "com.zirakusa.notas", "notes_"), app("Filem", "com.zirakusa.filem", "files_"), app("Stone", "com.zirakusa.stone", "music_"),
@@ -47,6 +51,7 @@ class ScreenshotsTest {
             "com.android.camera/com.android.camera.Main", "com.android.chrome/com.android.chrome.Main") }
         state.nextAlarm = LocalDateTime.of(2026, 11, 23, 6, 2).atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli()
         state.changeWallpaper(false)
+        state.finishWelcome()
         compose.setContent { HomeTheme(state.themeMode, state.accent) { LauncherApp(state, actions, ticking = false) } }
     }
 
@@ -95,5 +100,29 @@ class ScreenshotsTest {
         state.changeTheme(ThemeMode.LIGHT)
         state.openDrawer()
         shot("drawer-light")
+    }
+
+    @Test fun welcomeAndToday() {
+        state.load(apps) { listOf("com.android.dialer/com.android.dialer.Main", "com.android.camera/com.android.camera.Main") }
+        state.changeWallpaper(false)
+        compose.setContent { HomeTheme(state.themeMode, state.accent) { LauncherApp(state, actions, ticking = false) } }
+        compose.onNodeWithText("Bienvenido a Inicio").assertExists()
+        shot("welcome")
+        compose.onNodeWithText("Continuar").performClick()
+        compose.onNodeWithText("Reloj").performClick()
+        shot("welcome-favourites")
+        compose.onNodeWithText("Continuar").performClick(); compose.onNodeWithText("Continuar").performClick()
+        state.isDefault = false
+        shot("welcome-default")
+        compose.onNodeWithText("¡Vamos!").performClick()
+        assertEquals(Page.HOME, state.page); assertEquals(3, state.dock.size)
+        listOf(8, 8, 8, 9, 13).forEach { actions.open(apps[it]) }
+        state.page = Page.FEED
+        compose.onNodeWithText("Buenos días").assertExists()
+        compose.onNodeWithText("09:00 Reunión de equipo").assertExists()
+        shot("today")
+        state.openDrawer()
+        compose.onNodeWithText("Recientes").assertExists()
+        shot("drawer-recent")
     }
 }

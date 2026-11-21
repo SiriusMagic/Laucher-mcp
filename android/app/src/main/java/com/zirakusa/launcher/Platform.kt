@@ -14,12 +14,14 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toUri
 import com.zirakusa.launcher.data.AppEntry
+import com.zirakusa.launcher.data.FamilyCard
 import java.util.concurrent.ConcurrentHashMap
 
 /** The phone's apps: the ones with a launcher entry, family apps marked by the module they declare for Gateway Hub. */
 object PhoneApps {
     const val HUB_ACTION = "com.zirakusa.gatewayhub.action.APP"
     const val HUB_MODULE = "com.zirakusa.gatewayhub.module"
+    const val SUMMARY = "com.zirakusa.family.summary"
     private val icons = ConcurrentHashMap<String, ImageBitmap>()
 
     private fun query(pm: PackageManager, intent: Intent, flags: Int): List<ResolveInfo> =
@@ -28,13 +30,24 @@ object PhoneApps {
 
     fun list(context: Context): List<AppEntry> = runCatching {
         val pm = context.packageManager
-        val modules = query(pm, Intent(HUB_ACTION), PackageManager.GET_META_DATA)
-            .mapNotNull { r -> r.activityInfo.metaData?.getString(HUB_MODULE)?.let { r.activityInfo.packageName to it } }.toMap()
+        val family = query(pm, Intent(HUB_ACTION), PackageManager.GET_META_DATA).mapNotNull { r -> r.activityInfo.metaData?.let { r.activityInfo.packageName to it } }
+        val modules = family.mapNotNull { (p, m) -> m.getString(HUB_MODULE)?.let { p to it } }.toMap()
+        // A summary authority is trusted only when it belongs to the same package that declares it.
+        val summaries = family.mapNotNull { (p, m) -> m.getString(SUMMARY)?.takeIf { it.startsWith("$p.") }?.let { p to it } }.toMap()
         query(pm, Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER), 0)
             .filter { it.activityInfo.packageName != context.packageName }
-            .map { r -> AppEntry(r.activityInfo.packageName, r.activityInfo.name, r.loadLabel(pm).toString(), modules[r.activityInfo.packageName]) }
+            .map { r -> AppEntry(r.activityInfo.packageName, r.activityInfo.name, r.loadLabel(pm).toString(), modules[r.activityInfo.packageName],
+                summaries[r.activityInfo.packageName]) }
             .distinctBy { it.key }
     }.getOrDefault(emptyList())
+
+    /** «Hoy»: what each family app with a summary says now (apps signed by another developer answer nothing). Slow: not on the main thread. */
+    fun summaries(context: Context, apps: List<AppEntry>): List<FamilyCard> = apps.filter { it.summary != null }.distinctBy { it.pkg }.mapNotNull { app ->
+        runCatching {
+            val b = context.contentResolver.call("content://${app.summary}".toUri(), "summary", null, null) ?: return@runCatching null
+            FamilyCard.of(app, b.getString("title"), b.getStringArrayList("lines"), b.getString("empty"))
+        }.getOrNull()
+    }
 
     /** The app's icon, kept in memory once drawn. */
     fun icon(context: Context, app: AppEntry, size: Int): ImageBitmap? = icons[app.key] ?: runCatching {

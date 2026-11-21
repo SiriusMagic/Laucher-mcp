@@ -46,3 +46,19 @@ Ser encontrada no enciende nada. El módulo es el prefijo de sus herramientas (`
 ## 6. Versiones
 - `versionCode` y `versionName` suben juntos; el APK firmado se copia a `android/<App>-<versión>.apk` (se borra el
   anterior) y se anota en `CHANGELOG.md`. Pruebas, lint sin avisos y `assembleRelease` antes de cada versión.
+
+## 7. Resumen de familia (la pantalla «Hoy» de Inicio)
+Una app puede contar en una tarjeta qué tiene ahora (Reloj: próxima alarma; Calendario: eventos de hoy):
+```xml
+<permission android:name="com.zirakusa.family.permission.SUMMARY" android:protectionLevel="signature"
+    android:label="@string/summary_permission" />
+<!-- en la actividad principal, junto al módulo de Gateway Hub -->
+<meta-data android:name="com.zirakusa.family.summary" android:value="${applicationId}.summary" />
+<provider android:name=".SummaryProvider" android:authorities="${applicationId}.summary"
+    android:exported="true" android:permission="com.zirakusa.family.permission.SUMMARY" />
+```
+- `call("summary")` devuelve un `Bundle`: `title` (texto), `lines` (`ArrayList<String>`, hasta 5 líneas cortas) y
+  `empty` (lo que se muestra si no hay líneas). Nada más: ni datos crudos ni identificadores.
+- Solo responde a apps firmadas por el mismo desarrollador (permiso de firma y `checkSignatures` en el proveedor).
+- Las líneas salen de una función pura con prueba (`SummaryLines`). La autoridad debe empezar por el paquete de la app.
+- Lo usan Reloj 0.2.0 y Calendario 0.2.0. Inicio también lo ofrece a la IA con `launcher_today`.

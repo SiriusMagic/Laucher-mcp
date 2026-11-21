@@ -3,6 +3,10 @@ package com.zirakusa.launcher
 import com.zirakusa.launcher.data.AppEntry
 import com.zirakusa.launcher.data.Apps
 import com.zirakusa.launcher.data.Dock
+import com.zirakusa.launcher.data.FamilyCard
+import com.zirakusa.launcher.data.Greeting
+import com.zirakusa.launcher.data.Usage
+import com.zirakusa.launcher.ui.Page
 import com.zirakusa.launcher.data.MapValues
 import com.zirakusa.launcher.data.Settings
 import com.zirakusa.launcher.ui.HomeState
@@ -74,5 +78,33 @@ class LauncherTest {
         val s = Settings(MapValues())
         assertNull(s.dock); assertEquals(4, s.columns); assertTrue(s.familyFirst); assertTrue(s.wallpaper)
         s.columns = 7; assertEquals(4, s.columns); s.columns = 5; assertEquals(5, s.columns)
+    }
+
+    @Test fun usageCardsGreetingAndWelcome() {
+        var counts = emptyMap<String, Int>(); var recent = emptyList<String>()
+        listOf(chrome, camara, chrome, reloj, chrome, camara).forEach { a -> Usage.record(counts, recent, a.key).let { counts = it.first; recent = it.second } }
+        assertEquals(listOf(chrome, camara, reloj), Usage.frequent(counts, apps, emptySet()))
+        assertEquals(listOf(camara, chrome, reloj), Usage.recent(recent, apps, emptySet()))
+        assertEquals(listOf(chrome, reloj), Usage.frequent(counts, apps, setOf(camara.key)))
+        assertEquals(counts, Usage.parse(Usage.serialize(counts))); assertTrue(Usage.parse("x\ty\nbad").isEmpty())
+        assertEquals(Usage.RECENT, (1..20).fold(emptyList<String>()) { r, i -> Usage.record(emptyMap(), r, "k$i").second }.size)
+
+        assertNull(FamilyCard.of(reloj, null, null, null))
+        val card = FamilyCard.of(reloj, "", List(9) { "l$it" } + "  ", "Nada")!!
+        assertEquals("Reloj", card.title); assertEquals(FamilyCard.MAX_LINES, card.lines.size)
+        assertEquals(Greeting.MORNING, Greeting.at(7)); assertEquals(Greeting.AFTERNOON, Greeting.at(15)); assertEquals(Greeting.NIGHT, Greeting.at(22))
+        assertEquals(Greeting.NIGHT, Greeting.at(3))
+
+        val kv = MapValues()
+        val state = HomeState(kv)
+        assertEquals(Page.WELCOME, state.page)
+        state.load(apps) { listOf(chrome.key) }
+        assertEquals(listOf(chrome.key), state.picked)
+        state.togglePick(reloj); state.togglePick(chrome)
+        repeat(4) { state.nextStep() }
+        assertEquals(Page.HOME, state.page); assertEquals(listOf(reloj), state.dockApps)
+        assertEquals(Page.HOME, HomeState(kv).page)                                    // only the first time
+        state.launched(camara); state.launched(camara)
+        assertEquals(listOf(camara), HomeState(kv).also { it.load(apps) }.frequent)
     }
 }

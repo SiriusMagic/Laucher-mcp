@@ -1,6 +1,14 @@
 package com.zirakusa.launcher.ui.screens
 
 import androidx.compose.foundation.background
+import com.zirakusa.launcher.data.Apps
+import kotlinx.coroutines.launch
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -58,20 +66,33 @@ import com.zirakusa.launcher.ui.theme.HomeColors
     }
     LaunchedEffect(state.drawerOpened) { if (state.searching) runCatching { focus.requestFocus() } }
     val list = rememberLazyListState()
+    val scope = rememberCoroutineScope()
     LaunchedEffect(state.drawerOpened) { list.scrollToItem(0) }
-    LazyColumn(Modifier.fillMaxSize(), list) {
-        if (state.query.isNotBlank()) {
-            if (state.results.isEmpty()) item { Text(stringResource(R.string.no_apps), Modifier.fillMaxWidth().padding(32.dp), color = HomeColors.Muted, fontSize = 16.sp) }
-            grid(state.results, state, actions)
-        } else {
-            if (state.familyFirst && state.family.isNotEmpty()) {
-                item { Caption(stringResource(R.string.family)) }
-                grid(state.family, state, actions)
+    val recent = if (state.showRecent) state.recentApps.take(state.columns) else emptyList()
+    val family = if (state.familyFirst) state.family else emptyList()
+    // Where «Todas» starts: captions and rows before it, so the letters on the right can jump there.
+    val before = (if (recent.isEmpty()) 0 else 2) + (if (family.isEmpty()) 0 else 1 + (family.size + state.columns - 1) / state.columns) + 1
+    Box(Modifier.fillMaxSize()) {
+        LazyColumn(Modifier.fillMaxSize().padding(end = if (state.query.isBlank()) 20.dp else 0.dp), list) {
+            if (state.query.isNotBlank()) {
+                if (state.results.isEmpty()) item { Text(stringResource(R.string.no_apps), Modifier.fillMaxWidth().padding(32.dp), color = HomeColors.Muted, fontSize = 16.sp) }
+                grid(state.results, state, actions)
+            } else {
+                if (recent.isNotEmpty()) { item { Caption(stringResource(R.string.recent)) }; grid(recent, state, actions) }
+                if (family.isNotEmpty()) { item { Caption(stringResource(R.string.family)) }; grid(family, state, actions) }
+                item { Caption(stringResource(R.string.all_apps)) }
+                grid(state.drawer, state, actions, "all")
             }
-            item { Caption(stringResource(R.string.all_apps)) }
-            grid(state.drawer, state, actions, "all")
+            item { Spacer(Modifier.padding(bottom = 24.dp)) }
         }
-        item { Spacer(Modifier.padding(bottom = 24.dp)) }
+        if (state.query.isBlank()) Column(Modifier.align(Alignment.CenterEnd).fillMaxHeight().padding(vertical = 16.dp, horizontal = 4.dp),
+            verticalArrangement = Arrangement.SpaceEvenly, horizontalAlignment = Alignment.CenterHorizontally) {
+            val first = state.drawer.withIndex().groupBy { Apps.letter(it.value) }.mapValues { it.value.first().index }
+            first.forEach { (letter, at) ->
+                Text(letter.toString(), Modifier.clickable { scope.launch { list.scrollToItem(before + at / state.columns) } },
+                    fontSize = 12.sp, color = HomeColors.AccentText)
+            }
+        }
     }
 }
 

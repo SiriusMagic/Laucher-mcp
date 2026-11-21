@@ -1,6 +1,7 @@
 package com.zirakusa.launcher
 
 import com.zirakusa.launcher.data.AppEntry
+import com.zirakusa.launcher.data.FamilyCard
 import com.zirakusa.launcher.mcp.Access
 import com.zirakusa.launcher.mcp.HubLink
 import com.zirakusa.launcher.mcp.Kind
@@ -30,6 +31,8 @@ class McpTest {
         override fun dock() = current
         override fun setDock(keys: List<String>) { current = keys }
         override fun hidden() = setOf("com.maps/com.maps.Main")
+        override fun cards() = listOf(FamilyCard(list[0], "Reloj", listOf("Próxima alarma: lun 6:02 a. m."), "Ninguna alarma activa"))
+        override fun frequent() = listOf(list[3])
     }
     private val writer = Token("w", "Claude", "ini_" + "w".repeat(40), Access.WRITE, Kind.HUB, "Casa")
     private val reader = Token("r", "Lector", "ini_" + "r".repeat(40), Access.READ)
@@ -49,8 +52,8 @@ class McpTest {
     private fun dockPackages(o: JSONObject) = o.getJSONArray("dock").let { a -> (0 until a.length()).map { a.getJSONObject(it).getString("package") } }
 
     @Test fun listsTheTools() {
-        assertEquals(listOf("launcher_apps", "launcher_dock", "launcher_dock_add", "launcher_dock_remove"), names(writer))
-        assertEquals(listOf("launcher_apps", "launcher_dock"), names(reader))
+        assertEquals(listOf("launcher_apps", "launcher_today", "launcher_dock", "launcher_dock_add", "launcher_dock_remove"), names(writer))
+        assertEquals(listOf("launcher_apps", "launcher_today", "launcher_dock"), names(reader))
         assertEquals("inicio", rpc(writer, "initialize").getJSONObject("serverInfo").getString("name"))
     }
 
@@ -64,6 +67,11 @@ class McpTest {
         assertEquals("com.music", ok("launcher_apps", JSONObject().put("query", "musica")).getJSONArray("apps").getJSONObject(0).getString("package"))
         assertTrue(ok("launcher_apps", JSONObject().put("query", "mapas")).getJSONArray("apps").getJSONObject(0).getBoolean("hidden"))
         assertEquals(listOf("com.android.camera"), dockPackages(ok("launcher_dock")))
+        val today = ok("launcher_today")
+        val card = today.getJSONArray("cards").getJSONObject(0)
+        assertEquals("clock_", card.getString("mcp_module")); assertEquals("Próxima alarma: lun 6:02 a. m.", card.getJSONArray("lines").getString(0))
+        assertEquals("com.android.chrome", today.getJSONArray("frequent").getJSONObject(0).getString("package"))
+        assertEquals("BAD_ARGUMENT", code("launcher_today", JSONObject().put("day", "hoy")))
     }
 
     @Test fun changesTheDock() {

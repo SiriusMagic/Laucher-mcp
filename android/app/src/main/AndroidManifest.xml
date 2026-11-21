@@ -6,6 +6,10 @@
     <!-- «Redireccionar a Hub»: only apps signed with the same key (Gateway Hub) get this permission. -->
     <permission android:name="com.zirakusa.gatewayhub.permission.LINK" android:protectionLevel="signature"
         android:label="@string/hub_link_permission" />
+    <!-- «Hoy»: the family apps' summaries (Reloj, Calendario…); only apps signed with the same key hold this permission. -->
+    <permission android:name="com.zirakusa.family.permission.SUMMARY" android:protectionLevel="signature"
+        android:label="@string/summary_permission" />
+    <uses-permission android:name="com.zirakusa.family.permission.SUMMARY" />
     <!-- Which apps there are: the ones with a launcher entry (no QUERY_ALL_PACKAGES), the family apps and the dock's first guesses. -->
     <queries>
         <intent><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent>

@@ -1,3 +1,17 @@
+# Inicio 0.2.0
+
+- **Bienvenida** la primera vez (4 pasos, «Omitir» siempre): qué es Inicio y que no pide ubicación, fotos, archivos ni
+  cuentas; elegir hasta 5 apps favoritas para el dock; el fondo de pantalla; hacerlo pantalla de inicio predeterminada.
+  Se puede ver otra vez desde Ajustes.
+- **«Hoy»** (deslizar a la derecha en el inicio, o mantener pulsado › Hoy): saludo y fecha, una tarjeta por cada app de
+  la familia con resumen (Reloj: próxima alarma, temporizador y cronómetro; Calendario: feriado y eventos de hoy), apps
+  frecuentes y recientes. Tocar una tarjeta abre su app.
+- **Resumen de familia**: el contrato nuevo en `FAMILIA.md` (sección 7), con permiso de firma.
+- **Cajón:** fila «Recientes» (se puede apagar) e índice A-Z a la derecha.
+- Inicio cuenta qué apps abres (solo en el teléfono) para frecuentes y recientes.
+- MCP: `launcher_today` (las tarjetas de «Hoy» y las apps frecuentes).
+- 12 pruebas.
+
 # Inicio 0.1.0
 
 Primera versión: la base del launcher de la familia.

@@ -3,6 +3,7 @@ package com.zirakusa.launcher.mcp
 import com.zirakusa.launcher.data.AppEntry
 import com.zirakusa.launcher.data.Apps
 import com.zirakusa.launcher.data.Dock
+import com.zirakusa.launcher.data.FamilyCard
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -12,6 +13,10 @@ interface LauncherData {
     fun dock(): List<String>
     fun setDock(keys: List<String>)
     fun hidden(): Set<String>
+    /** What each family app says now (its card in «Hoy»). */
+    fun cards(): List<FamilyCard>
+    /** The apps opened most (counted on the phone only). */
+    fun frequent(): List<AppEntry>
 }
 
 /** An expected failure the AI can read (structuredContent.error.code), never a crash. */
@@ -35,6 +40,8 @@ object LauncherTools {
             "module, reachable through Gateway Hub), in the dock or hidden. Optionally filtered by «query» (accents ignored).", false,
             schema(emptyList(), "query" to prop("string", "Words of the app's name or package."),
                 "family_only" to prop("boolean", "Only the family apps (they speak MCP)."))),
+        Tool("launcher_today", "The user's day as Inicio's «Hoy» shows it: one card per family app that has something to say (e.g. Reloj: " +
+            "the next alarm; Calendario: today's events), then the apps opened most. Each card names its app and MCP module.", false, schema(emptyList())),
         Tool("launcher_dock", "The apps in the dock at the bottom of the home screen, in order (up to ${Dock.MAX}).", false, schema(emptyList())),
         Tool("launcher_dock_add", "Adds an app to the end of the dock (nothing when it is already there).", true, schema(listOf("package"), pkg)),
         Tool("launcher_dock_remove", "Removes an app from the dock (the app stays installed).", true, schema(listOf("package"), pkg)),
@@ -52,6 +59,10 @@ object LauncherTools {
         return when (name) {
             "launcher_apps" -> apps(args, data)
             "launcher_dock" -> dock(data)
+            "launcher_today" -> JSONObject().put("cards", JSONArray(data.cards().map { c ->
+                JSONObject().put("app", c.app.label).put("package", c.app.pkg).put("mcp_module", c.app.module ?: JSONObject.NULL)
+                    .put("title", c.title).put("lines", JSONArray(c.lines)).put("empty", c.empty)
+            })).put("frequent", JSONArray(data.frequent().map { JSONObject().put("name", it.label).put("package", it.pkg) }))
             else -> {
                 val p = (args.opt("package") as? String)?.trim()?.takeIf { Regex("^[A-Za-z0-9_.]{1,200}$").matches(it) }
                     ?: throw ToolFailure("BAD_ARGUMENT", "package must be an app package like com.example.app.")

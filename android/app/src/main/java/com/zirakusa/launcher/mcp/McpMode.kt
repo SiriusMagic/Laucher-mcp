@@ -10,6 +10,7 @@ import androidx.core.content.edit
 import com.zirakusa.launcher.PhoneApps
 import com.zirakusa.launcher.BuildConfig
 import com.zirakusa.launcher.data.Settings
+import com.zirakusa.launcher.data.Usage
 import com.zirakusa.launcher.data.SharedValues
 
 /**
@@ -95,4 +96,6 @@ class LiveData(private val context: Context) : LauncherData {
     override fun dock() = settings.dock.orEmpty()
     override fun setDock(keys: List<String>) { settings.dock = keys; main.post { McpMode.onChanged() } }
     override fun hidden() = settings.hidden
+    override fun cards() = PhoneApps.summaries(context, apps())
+    override fun frequent() = Usage.frequent(settings.counts, apps(), settings.hidden)
 }

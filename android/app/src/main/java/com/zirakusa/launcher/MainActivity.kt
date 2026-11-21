@@ -56,7 +56,7 @@ class MainActivity : ComponentActivity() {
         ContextCompat.registerReceiver(this, packages, IntentFilter().apply {
             addAction(Intent.ACTION_PACKAGE_ADDED); addAction(Intent.ACTION_PACKAGE_REMOVED); addAction(Intent.ACTION_PACKAGE_CHANGED); addDataScheme("package")
         }, ContextCompat.RECEIVER_NOT_EXPORTED)
-        val actions = AppActions(icon = { app, px -> PhoneApps.icon(this, app, px) }, open = ::open,
+        val actions = AppActions(icon = { app, px -> PhoneApps.icon(this, app, px) }, cards = { PhoneApps.summaries(this, it) }, open = ::open,
             info = { start(PhoneApps.info(it.pkg)) }, uninstall = { start(PhoneApps.uninstall(it.pkg)) },
             clock = { start(PhoneApps.clock(this)) }, calendar = { start(PhoneApps.calendar(this)) },
             wallpaper = { start(Intent.createChooser(Intent(Intent.ACTION_SET_WALLPAPER), getString(R.string.wallpaper_change))) },
@@ -66,7 +66,7 @@ class MainActivity : ComponentActivity() {
                 val light = HomeColors.isLight && !(state.wallpaper && state.page == Page.HOME)
                 SideEffect { WindowCompat.getInsetsController(window, window.decorView).run { isAppearanceLightStatusBars = light; isAppearanceLightNavigationBars = light } }
                 BackHandler(state.page != Page.HOME) {
-                    when (state.page) { Page.HIDDEN, Page.MCP -> state.page = Page.SETTINGS; else -> state.home() }
+                    when (state.page) { Page.HIDDEN, Page.MCP -> state.page = Page.SETTINGS; Page.WELCOME -> state.finishWelcome(); else -> state.home() }
                 }
                 LauncherApp(state, actions)
             }
@@ -76,7 +76,7 @@ class MainActivity : ComponentActivity() {
     /** The home button while Inicio is open goes back to the home screen. */
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        if (intent.hasCategory(Intent.CATEGORY_HOME)) state.home()
+        if (intent.hasCategory(Intent.CATEGORY_HOME) && state.page != Page.WELCOME) state.home()
     }
 
     override fun onResume() {
@@ -96,8 +96,8 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun open(app: AppEntry) {
-        try { startActivity(PhoneApps.launch(app)) } catch (_: Exception) { Toast.makeText(this, R.string.cannot_open, Toast.LENGTH_SHORT).show(); reload() }
-        if (state.page == Page.DRAWER) window.decorView.postDelayed({ state.home() }, 400)
+        try { startActivity(PhoneApps.launch(app)); state.launched(app) } catch (_: Exception) { Toast.makeText(this, R.string.cannot_open, Toast.LENGTH_SHORT).show(); reload() }
+        if (state.page == Page.DRAWER || state.page == Page.FEED) window.decorView.postDelayed({ state.home() }, 400)
     }
 
     private fun start(intent: Intent) = try { startActivity(intent) } catch (_: ActivityNotFoundException) {

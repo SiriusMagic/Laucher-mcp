@@ -4,6 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -53,7 +54,7 @@ import java.time.format.DateTimeFormatter
 
 /**
  * The home screen: the clock, date and next alarm on top (tap: Reloj / Calendario), the family apps, «Buscar apps» and
- * the dock. Swipe up or tap the apps button for the drawer; hold the background for the wallpaper and Ajustes.
+ * the dock. Swipe up or tap the apps button for the drawer, right for «Hoy»; hold the background for the wallpaper and Ajustes.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable fun HomeScreen(state: HomeState, actions: AppActions) {
@@ -64,7 +65,9 @@ import java.time.format.DateTimeFormatter
         else Brush.verticalGradient(listOf(HomeColors.Background, HomeColors.Background)))
         .combinedClickable(onClick = {}, onLongClick = { menu = true })
         .pointerInput(Unit) { var total = 0f; detectVerticalDragGestures(onDragStart = { total = 0f },
-            onDragEnd = { if (total < -60.dp.toPx()) state.openDrawer() }) { _, dy -> total += dy } }) {
+            onDragEnd = { if (total < -60.dp.toPx()) state.openDrawer() }) { _, dy -> total += dy } }
+        .pointerInput(Unit) { var total = 0f; detectHorizontalDragGestures(onDragStart = { total = 0f },
+            onDragEnd = { if (total > 60.dp.toPx()) state.page = Page.FEED }) { _, dx -> total += dx } }) {
         Column(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding()) {
             if (state.showClock) Clock(state, actions, ink)
             Spacer(Modifier.weight(1f))
@@ -91,6 +94,7 @@ import java.time.format.DateTimeFormatter
             DropdownMenu(menu, { menu = false }) {
                 DropdownMenuItem({ Text(stringResource(R.string.wallpaper_change)) }, { menu = false; actions.wallpaper() },
                     leadingIcon = { Icon(Icons.Outlined.Wallpaper, null) })
+                DropdownMenuItem({ Text(stringResource(R.string.today_page)) }, { menu = false; state.page = Page.FEED })
                 DropdownMenuItem({ Text(stringResource(R.string.settings)) }, { menu = false; state.page = Page.SETTINGS })
             }
         }

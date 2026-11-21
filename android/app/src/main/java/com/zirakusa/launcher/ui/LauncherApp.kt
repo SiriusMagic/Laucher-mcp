@@ -4,8 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.ImageBitmap
 import com.zirakusa.launcher.data.AppEntry
+import com.zirakusa.launcher.data.FamilyCard
 import com.zirakusa.launcher.ui.screens.AppMenu
 import com.zirakusa.launcher.ui.screens.DrawerScreen
+import com.zirakusa.launcher.ui.screens.FeedScreen
+import com.zirakusa.launcher.ui.screens.WelcomeScreen
 import com.zirakusa.launcher.ui.screens.HiddenScreen
 import com.zirakusa.launcher.ui.screens.HomeScreen
 import com.zirakusa.launcher.ui.screens.McpScreen
@@ -15,6 +18,8 @@ import kotlinx.coroutines.delay
 /** What the screens ask of the phone (the activity gives the real ones; tests leave the defaults). */
 class AppActions(
     val icon: (AppEntry, Int) -> ImageBitmap? = { _, _ -> null },
+    /** «Hoy»: the family apps' cards (slow; called off the main thread). */
+    val cards: (List<AppEntry>) -> List<FamilyCard> = { emptyList() },
     val open: (AppEntry) -> Unit = {},
     val info: (AppEntry) -> Unit = {},
     val uninstall: (AppEntry) -> Unit = {},
@@ -32,6 +37,8 @@ class AppActions(
     if (ticking) LaunchedEffect(Unit) { while (true) { state.tick(); delay(1000) } }
     when (state.page) {
         Page.HOME -> HomeScreen(state, actions)
+        Page.FEED -> FeedScreen(state, actions)
+        Page.WELCOME -> WelcomeScreen(state, actions)
         Page.DRAWER -> DrawerScreen(state, actions)
         Page.SETTINGS -> SettingsScreen(state, actions)
         Page.HIDDEN -> HiddenScreen(state, actions)

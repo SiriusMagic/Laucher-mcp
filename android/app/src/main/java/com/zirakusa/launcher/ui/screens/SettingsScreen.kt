@@ -55,7 +55,11 @@ import java.util.Locale
     Column(Modifier.fillMaxSize().background(HomeColors.Background).systemBarsPadding().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)) {
         PageTop(stringResource(R.string.settings)) { state.page = Page.HOME }
-        Group { Item(stringResource(R.string.default_home), stringResource(if (state.isDefault) R.string.default_yes else R.string.default_no), onClick = actions.makeDefault) }
+        Group {
+            Item(stringResource(R.string.default_home), stringResource(if (state.isDefault) R.string.default_yes else R.string.default_no), onClick = actions.makeDefault)
+            Divider()
+            Item(stringResource(R.string.welcome_again), null) { state.step = 0; state.picked = state.dock; state.page = Page.WELCOME }
+        }
         Caption(stringResource(R.string.home_screen))
         Group {
             SwitchItem(stringResource(R.string.show_clock), stringResource(R.string.show_clock_hint), state.showClock, onChange = state::changeClock)
@@ -72,6 +76,8 @@ import java.util.Locale
             }
             Divider()
             SwitchItem(stringResource(R.string.family_first), stringResource(R.string.family_first_hint), state.familyFirst, onChange = state::changeFamilyFirst)
+            Divider()
+            SwitchItem(stringResource(R.string.show_recent), null, state.showRecent, onChange = state::changeShowRecent)
             Divider()
             Item(stringResource(R.string.hidden_apps), state.hidden.size.toString()) { state.page = Page.HIDDEN }
         }

@@ -31,6 +31,12 @@ class Settings(private val kv: KeyValues) {
     var wallpaper: Boolean get() = flag("wallpaper", true); set(v) = setFlag("wallpaper", v)
     /** The clock and date on the home screen. */
     var clock: Boolean get() = flag("clock", true); set(v) = setFlag("clock", v)
+    /** «Recientes» on top of the drawer. */
+    var showRecent: Boolean get() = flag("show_recent", true); set(v) = setFlag("show_recent", v)
+    /** The welcome steps were done (or skipped). */
+    var onboarded: Boolean get() = flag("onboarded", false); set(v) = setFlag("onboarded", v)
+    var counts: Map<String, Int> get() = Usage.parse(kv.get("counts")); set(v) = kv.put("counts", Usage.serialize(v))
+    var recent: List<String> get() = list("recent"); set(v) = kv.put("recent", v.joinToString("\n"))
     var theme: String? get() = kv.get("theme"); set(v) = kv.put("theme", v)
     var accent: String? get() = kv.get("accent"); set(v) = kv.put("accent", v)
 
