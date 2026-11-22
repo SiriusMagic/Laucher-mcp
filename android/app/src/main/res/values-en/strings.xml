@@ -127,8 +127,8 @@
     <string name="card_app">%1$s</string>
     <string name="preview_clock">Install Reloj 0.2.0 or newer to see your next alarm and timer here.</string>
     <string name="preview_calendar">Install Calendario 0.2.0 or newer to see today\'s events here.</string>
-    <string name="preview_notes">Coming soon: your latest notes, once Notas gives Inicio its summary.</string>
-    <string name="preview_documents">Coming soon: your recent documents, once Filem gives Inicio its summary.</string>
+    <string name="preview_notes">Install Notas 0.5.0 or newer to see your pending tasks and latest notes here.</string>
+    <string name="preview_documents">Install Filem 0.4.0 or newer to see your recent documents here.</string>
     <string name="preview_app">This app does not give Inicio its summary yet.</string>
     <string name="mcp_cards_on">On: your AI can see «Hoy», show, hide and order cards and the dock.</string>
     <string name="mcp_cards_off">Turn it on so your AI arranges «Hoy» and the dock for you.</string>
@@ -152,4 +152,5 @@
     <string name="suggest_hint">In «List», fills your favourites with the apps you open most (up to 8).</string>
     <string name="sort_usage">Sort by use</string>
     <string name="sort_usage_hint">Inside each letter, the apps you open most first.</string>
+    <string name="nothing_pending">Nothing pending</string>
 </resources>

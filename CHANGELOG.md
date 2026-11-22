@@ -1,3 +1,10 @@
+# Inicio 0.5.0
+
+- **Notas** y **Documentos** en vivo en «Hoy» con Notas 0.5.0 (tareas pendientes y últimas notas) y Filem 0.4.0
+  (documentos recientes). Si una app no tiene nada que contar: «No tienes pendientes».
+- **Skeleton loader**: mientras «Hoy» pregunta a las apps, tarjetas grises con un brillo que las recorre.
+- 17 pruebas.
+
 # Inicio 0.4.0
 
 - **Diseño «Lista»** (Ajustes › Pantalla de inicio › Diseño: Clásico / Lista): reloj grande, fecha y el primer evento

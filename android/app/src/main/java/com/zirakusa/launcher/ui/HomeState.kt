@@ -41,6 +41,8 @@ class HomeState(values: KeyValues, private val clock: () -> LocalDateTime = Loca
     var showRecent by mutableStateOf(settings.showRecent); private set
     /** «Hoy»: the family apps' cards, read when «Hoy» opens. */
     var cards by mutableStateOf(emptyList<FamilyCard>())
+    /** «Hoy» is asking the family apps (the skeleton shimmers meanwhile). */
+    var cardsLoading by mutableStateOf(true)
     /** «Hoy»: the order of the cards and which show. */
     var slots by mutableStateOf(settings.layout); private set
     /** The category of «Ajustes» that is open. */

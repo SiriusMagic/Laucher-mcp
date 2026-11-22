@@ -1,6 +1,16 @@
 package com.zirakusa.launcher.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -68,7 +78,8 @@ import java.time.format.DateTimeFormatter
         }
         IconButton(state::home) { Icon(Icons.AutoMirrored.Outlined.ArrowForward, stringResource(R.string.back_home), tint = HomeColors.Text) }
     }
-    LaunchedEffect(state.apps) { state.cards = withContext(Dispatchers.IO) { actions.cards(state.apps) } }
+    LaunchedEffect(state.apps) { state.cards = withContext(Dispatchers.IO) { actions.cards(state.apps) }; state.cardsLoading = false }
+    if (state.cardsLoading) { repeat(3) { SkeletonCard() }; return@Column }
     val live = state.cards.associateBy { it.app.pkg }
     state.slots.filter { it.visible }.forEach { slot ->
         val hide = { state.showCard(slot.id, false) }
@@ -135,7 +146,7 @@ private val previewTexts = mapOf(CardKind.CLOCK to R.string.preview_clock, CardK
 @Composable private fun CardView(card: FamilyCard, actions: AppActions, onHide: () -> Unit, onEdit: () -> Unit) = Column(Modifier.fillMaxWidth()
     .clip(RoundedCornerShape(24.dp)).background(HomeColors.Card).clickable { actions.open(card.app) }.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
     Header(card.title, onHide, onEdit) { AppImage(card.app, actions, 28.dp); Spacer(Modifier.size(12.dp)) }
-    if (card.lines.isEmpty()) Text(card.empty, color = HomeColors.Muted, fontSize = 15.sp)
+    if (card.lines.isEmpty()) Text(card.empty.ifBlank { stringResource(R.string.nothing_pending) }, color = HomeColors.Muted, fontSize = 15.sp)
     card.lines.forEach { Text(it, fontSize = 16.sp) }
 }
 
@@ -149,5 +160,21 @@ private val previewTexts = mapOf(CardKind.CLOCK to R.string.preview_clock, CardK
             row.forEach { AppCell(it, actions, state, Modifier.weight(1f), size = 48.dp) }
             repeat(4 - row.size) { Spacer(Modifier.weight(1f)) }
         }
+    }
+}
+
+/** While «Hoy» loads: grey shapes like a card, with a light that sweeps across (feels faster than a spinner). */
+@Composable fun SkeletonCard() {
+    val x by rememberInfiniteTransition(label = "shimmer").animateFloat(-1f, 2f, infiniteRepeatable(tween(1200, easing = LinearEasing)), label = "x")
+    val base = HomeColors.Chip
+    val brush = Brush.linearGradient(listOf(base, HomeColors.Text.copy(alpha = 0.14f).compositeOver(base), base),
+        start = Offset(x * 600f, 0f), end = Offset(x * 600f + 300f, 0f))
+    Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(HomeColors.Card).padding(20.dp).semantics { contentDescription = "…" },
+        verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(Modifier.size(28.dp).clip(RoundedCornerShape(8.dp)).background(brush))
+            Box(Modifier.padding(start = 12.dp).fillMaxWidth(0.4f).height(14.dp).clip(RoundedCornerShape(7.dp)).background(brush))
+        }
+        listOf(0.85f, 0.65f).forEach { Box(Modifier.fillMaxWidth(it).height(12.dp).clip(RoundedCornerShape(6.dp)).background(brush)) }
     }
 }

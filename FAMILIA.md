@@ -61,4 +61,5 @@ Una app puede contar en una tarjeta qué tiene ahora (Reloj: próxima alarma; Ca
   `empty` (lo que se muestra si no hay líneas). Nada más: ni datos crudos ni identificadores.
 - Solo responde a apps firmadas por el mismo desarrollador (permiso de firma y `checkSignatures` en el proveedor).
 - Las líneas salen de una función pura con prueba (`SummaryLines`). La autoridad debe empezar por el paquete de la app.
-- Lo usan Reloj 0.2.0 y Calendario 0.2.0. Inicio también lo ofrece a la IA con `launcher_today`.
+- Lo usan Reloj 0.2.0, Calendario 0.2.0, Notas 0.5.0 y Filem 0.4.0. Si no hay líneas, el texto `empty` (por
+  defecto «No tienes pendientes»). Inicio también lo ofrece a la IA con `launcher_today`.

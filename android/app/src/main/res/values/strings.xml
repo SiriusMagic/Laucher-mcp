@@ -127,8 +127,8 @@
     <string name="card_app">%1$s</string>
     <string name="preview_clock">Instala Reloj 0.2.0 o más nuevo para ver aquí tu próxima alarma y el temporizador.</string>
     <string name="preview_calendar">Instala Calendario 0.2.0 o más nuevo para ver aquí los eventos de hoy.</string>
-    <string name="preview_notes">Próximamente: tus últimas notas, cuando Notas dé su resumen a Inicio.</string>
-    <string name="preview_documents">Próximamente: tus documentos recientes, cuando Filem dé su resumen a Inicio.</string>
+    <string name="preview_notes">Instala Notas 0.5.0 o más nuevo para ver aquí tus tareas pendientes y últimas notas.</string>
+    <string name="preview_documents">Instala Filem 0.4.0 o más nuevo para ver aquí tus documentos recientes.</string>
     <string name="preview_app">Esta app aún no da su resumen a Inicio.</string>
     <string name="mcp_cards_on">Activado: tu IA puede ver «Hoy», mostrar, ocultar y ordenar tarjetas y el dock.</string>
     <string name="mcp_cards_off">Actívalo para que tu IA organice «Hoy» y el dock por ti.</string>
@@ -152,4 +152,5 @@
     <string name="suggest_hint">En «Lista», completa tus favoritas con las apps que más abres (hasta 8).</string>
     <string name="sort_usage">Ordenar según su uso</string>
     <string name="sort_usage_hint">Dentro de cada letra, primero las apps que más abres.</string>
+    <string name="nothing_pending">No tienes pendientes</string>
 </resources>

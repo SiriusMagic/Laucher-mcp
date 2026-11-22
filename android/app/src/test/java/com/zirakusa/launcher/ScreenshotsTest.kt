@@ -12,6 +12,9 @@ import com.zirakusa.launcher.data.AppEntry
 import com.zirakusa.launcher.data.FamilyCard
 import com.zirakusa.launcher.data.HomeStyle
 import com.zirakusa.launcher.ui.screens.Section
+import com.zirakusa.launcher.ui.screens.SkeletonCard
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.unit.dp
 import com.zirakusa.launcher.data.MapValues
 import com.zirakusa.launcher.ui.AppActions
 import com.zirakusa.launcher.ui.HomeState
@@ -151,5 +154,13 @@ class ScreenshotsTest {
         state.page = Page.SETTINGS; state.section = Section.HOME
         compose.onNodeWithText("Lista").assertExists()
         shot("settings-home")
+    }
+
+    @Test fun skeletonWhileLoading() {
+        compose.mainClock.autoAdvance = false
+        compose.setContent { HomeTheme { androidx.compose.foundation.layout.Column(androidx.compose.ui.Modifier.padding(16.dp),
+            verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(12.dp)) { repeat(3) { SkeletonCard() } } } }
+        compose.mainClock.advanceTimeBy(500)
+        onView(isRoot()).captureRoboImage("build/screenshots/inicio-today-loading.png")
     }
 }
