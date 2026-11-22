@@ -82,7 +82,7 @@ aquí el suyo:
 | `ini_` | Inicio | `launcher_` |
 | `stv_` | Stone Video (desde 0.4.0; antes `stn_`, repetido) | — |
 | `qrc_` | QR | `qr_` |
-| `cli_` | Clima (reservado) | `weather_` |
+| `cli_` | Clima | `weather_` |
 | `red_` | Analizar redes (reservado) | `network_` |
 | `con_` | Contactos (reservado) | `contacts_` |
 | `cam_` | Cámara (reservado) | `camera_` |
