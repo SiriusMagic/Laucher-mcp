@@ -24,7 +24,7 @@ Ser encontrada no enciende nada. El módulo es el prefijo de sus herramientas (`
 ## 3. Modo MCP
 - Apagado de fábrica. «Activar MCP» o «Redireccionar a Hub», en **Ajustes › Modo MCP** (siempre en Ajustes).
 - Mismo relay público de Stone (WebSocket saliente, solo https/wss); un id de dispositivo por app.
-- Tokens: prefijo propio de 3 letras + 256 bits (`rel_`, `cal_`, `ini_`…), cifrados con el Keystore (`SecretBox`),
+- Tokens: prefijo propio de 3 letras + 256 bits, cifrados con el Keystore (`SecretBox`),
   de tipo LLM, Hub o Redirect, lectura o lectura y escritura, con caducidad, pausa y revocar.
 - `McpHandler`: JSON-RPC (Streamable HTTP), token comparado en tiempo constante, 120 peticiones por minuto, 1 MiB máx.
 - Herramientas: nombres `<modulo>_<verbo>`, argumentos con esquema estricto (`additionalProperties: false`), errores
@@ -63,3 +63,27 @@ Una app puede contar en una tarjeta qué tiene ahora (Reloj: próxima alarma; Ca
 - Las líneas salen de una función pura con prueba (`SummaryLines`). La autoridad debe empezar por el paquete de la app.
 - Lo usan Reloj 0.2.0, Calendario 0.2.0, Notas 0.5.0 y Filem 0.4.0. Si no hay líneas, el texto `empty` (por
   defecto «No tienes pendientes»). Inicio también lo ofrece a la IA con `launcher_today`.
+
+## 8. Registro de prefijos (únicos)
+Gateway Hub reconoce de qué app es un token por su prefijo, así que **nunca se repite**. Antes de crear una app, añade
+aquí el suyo:
+
+| Prefijo | App | Módulo del hub |
+|---|---|---|
+| `stn_` | Stone | `music_` |
+| `lum_` | Luma | `gallery_` |
+| `cal_` | Calculadora | `calc_` |
+| `not_` | Notas | `notes_` |
+| `fil_` | Filem | `files_` |
+| `bru_` | Brújula | `compass_` |
+| `niv_` | Nivel | `level_` |
+| `rel_` | Reloj | `clock_` |
+| `cld_` | Calendario (desde 0.3.0; antes `cal_`, repetido) | `calendar_` |
+| `ini_` | Inicio | `launcher_` |
+
+Pendiente: Stone Video aún usa `stn_` (heredado de Stone) y debe pasar a uno propio (por ejemplo `stv_`).
+
+## 9. Seguridad del token del propietario del hub
+`HUB_TOKEN` es el único secreto que elige una persona y abre el hub y, a través de él, los teléfonos. Desde Gateway Hub
+0.0.3 el hub no abre con un token débil (menos de 32 caracteres, poca variedad o secuencias). Créalo con
+`openssl rand -base64 32 | npx wrangler secret put HUB_TOKEN`. Los tokens de las apps son siempre aleatorios (256 bits).
