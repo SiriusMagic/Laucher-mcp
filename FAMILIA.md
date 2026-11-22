@@ -80,8 +80,8 @@ aquí el suyo:
 | `rel_` | Reloj | `clock_` |
 | `cld_` | Calendario (desde 0.3.0; antes `cal_`, repetido) | `calendar_` |
 | `ini_` | Inicio | `launcher_` |
+| `stv_` | Stone Video (desde 0.4.0; antes `stn_`, repetido) | — |
 
-Pendiente: Stone Video aún usa `stn_` (heredado de Stone) y debe pasar a uno propio (por ejemplo `stv_`).
 
 ## 9. Seguridad del token del propietario del hub
 `HUB_TOKEN` es el único secreto que elige una persona y abre el hub y, a través de él, los teléfonos. Desde Gateway Hub
