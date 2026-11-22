@@ -5,6 +5,8 @@ import com.zirakusa.launcher.data.Apps
 import com.zirakusa.launcher.data.CardStatus
 import com.zirakusa.launcher.data.Cards
 import com.zirakusa.launcher.data.Dock
+import com.zirakusa.launcher.data.HomeStyle
+import com.zirakusa.launcher.data.ListStyle
 import com.zirakusa.launcher.data.Slot
 import com.zirakusa.launcher.data.FamilyCard
 import com.zirakusa.launcher.data.Greeting
@@ -130,5 +132,24 @@ class LauncherTest {
         val state = HomeState(MapValues()).also { it.load(apps) }
         state.moveCard("recent", -10); state.showCard("notes", false)
         assertEquals("recent", state.slots.first().id); assertFalse(state.slots.first { it.id == "notes" }.visible)
+    }
+
+    @Test fun listStyle() {
+        val favs = ListStyle.favourites(listOf(chrome), listOf(chrome, camara, reloj), suggest = true)
+        assertEquals(listOf(chrome to false, camara to true, reloj to true), favs)
+        assertEquals(listOf(chrome to false), ListStyle.favourites(listOf(chrome), listOf(camara), suggest = false))
+        val many = (1..12).map { app("App $it", "p$it") }
+        assertEquals(ListStyle.FAVOURITES, ListStyle.favourites(many.take(3), many, true).size)
+        val cam2 = app("Calculadora", "calc")
+        assertEquals(listOf(chrome, cam2, camara), ListStyle.byUsage(listOf(camara, chrome, cam2), mapOf(chrome.key to 9, cam2.key to 2)).take(3))
+        assertEquals(listOf('C', 'N', 'R', '#'), ListStyle.letters(apps))
+        assertEquals(0f, ListStyle.wave(3, null, 50f)); assertEquals(50f, ListStyle.wave(3, 3f, 50f), 1e-4f)
+        assertTrue(ListStyle.wave(4, 3f, 50f) in 30f..50f); assertTrue(ListStyle.wave(9, 3f, 50f) < 1f)
+        assertEquals(0, ListStyle.letterAt(-5f, 100f, 4)); assertEquals(3, ListStyle.letterAt(99f, 100f, 4)); assertEquals(1, ListStyle.letterAt(30f, 100f, 4))
+        val state = HomeState(MapValues()).also { it.load(apps) }
+        assertEquals(HomeStyle.CLASSIC, state.style)
+        state.changeStyle(HomeStyle.LIST); state.openAt('R')
+        assertEquals(Page.DRAWER, state.page); assertEquals('R', state.jumpTo)
+        state.openDrawer(); assertNull(state.jumpTo)
     }
 }

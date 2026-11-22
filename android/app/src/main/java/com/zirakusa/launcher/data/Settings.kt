@@ -39,6 +39,15 @@ class Settings(private val kv: KeyValues) {
     var recent: List<String> get() = list("recent"); set(v) = kv.put("recent", v.joinToString("\n"))
     /** «Editar esta vista»: the cards of «Hoy», in order, shown or not. */
     var layout: List<Slot> get() = Cards.parse(kv.get("hoy")); set(v) = kv.put("hoy", Cards.serialize(v))
+    /** «Diseño»: Clásico or Lista. */
+    var style: HomeStyle get() = kv.get("style")?.let { runCatching { HomeStyle.valueOf(it) }.getOrNull() } ?: HomeStyle.CLASSIC
+        set(v) = kv.put("style", v.name)
+    /** «Vista previa del calendario»: today's first event under the clock. */
+    var calendarPreview: Boolean get() = flag("calendar_preview", true); set(v) = setFlag("calendar_preview", v)
+    /** «Sugerir apps frecuentes» in the «Lista» favourites. */
+    var suggest: Boolean get() = flag("suggest", true); set(v) = setFlag("suggest", v)
+    /** «Ordenar según su uso» inside each letter of the drawer. */
+    var sortByUsage: Boolean get() = flag("sort_usage", false); set(v) = setFlag("sort_usage", v)
     var theme: String? get() = kv.get("theme"); set(v) = kv.put("theme", v)
     var accent: String? get() = kv.get("accent"); set(v) = kv.put("accent", v)
 

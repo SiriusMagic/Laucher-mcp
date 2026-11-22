@@ -58,6 +58,7 @@ import java.time.format.DateTimeFormatter
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable fun HomeScreen(state: HomeState, actions: AppActions) {
+    if (state.style == com.zirakusa.launcher.data.HomeStyle.LIST) return ListHome(state, actions)
     var menu by remember { mutableStateOf(false) }
     // Over a wallpaper the text is white with a soft shade behind; on the theme's colour it follows the theme.
     val ink = if (state.wallpaper) Color.White else HomeColors.Text

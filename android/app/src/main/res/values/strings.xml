@@ -141,4 +141,15 @@
     <string name="cat_today">Hoy</string>
     <string name="cat_today_hint">Editar esta vista: tarjetas y su orden</string>
     <string name="cat_about_hint">Versión y política de privacidad</string>
+    <string name="style">Diseño</string>
+    <string name="style_classic">Clásico</string>
+    <string name="style_list">Lista</string>
+    <string name="style_classic_hint">Reloj, fila Familia, búsqueda y dock con iconos.</string>
+    <string name="style_list_hint">Reloj, tus favoritas en lista y el alfabeto a la derecha: desliza el dedo por las letras y suelta para abrir esa letra.</string>
+    <string name="calendar_preview">Vista previa del calendario</string>
+    <string name="calendar_preview_hint">El primer evento de hoy bajo el reloj (con Calendario 0.2.0).</string>
+    <string name="suggest">Sugerir apps frecuentes</string>
+    <string name="suggest_hint">En «Lista», completa tus favoritas con las apps que más abres (hasta 8).</string>
+    <string name="sort_usage">Ordenar según su uso</string>
+    <string name="sort_usage_hint">Dentro de cada letra, primero las apps que más abres.</string>
 </resources>

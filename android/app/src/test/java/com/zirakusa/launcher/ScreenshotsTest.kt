@@ -10,6 +10,8 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.zirakusa.launcher.data.AppEntry
 import com.zirakusa.launcher.data.FamilyCard
+import com.zirakusa.launcher.data.HomeStyle
+import com.zirakusa.launcher.ui.screens.Section
 import com.zirakusa.launcher.data.MapValues
 import com.zirakusa.launcher.ui.AppActions
 import com.zirakusa.launcher.ui.HomeState
@@ -133,5 +135,21 @@ class ScreenshotsTest {
         state.openDrawer()
         compose.onNodeWithText("Recientes").assertExists()
         shot("drawer-recent")
+    }
+
+    @Test fun listDesign() {
+        show()
+        state.changeStyle(HomeStyle.LIST)
+        state.cards = listOf(FamilyCard(apps[1], "Hoy en tu calendario", listOf("09:00 Reunión de equipo"), ""))
+        listOf(8, 8, 13, 14).forEach { actions.open(apps[it]) }
+        compose.onNodeWithText("09:00 Reunión de equipo").assertExists()
+        compose.onNodeWithText("Teléfono").assertExists()
+        shot("list-home")
+        state.openAt('M')
+        compose.onNodeWithText("Mapas").assertExists()
+        shot("list-drawer")
+        state.page = Page.SETTINGS; state.section = Section.HOME
+        compose.onNodeWithText("Lista").assertExists()
+        shot("settings-home")
     }
 }

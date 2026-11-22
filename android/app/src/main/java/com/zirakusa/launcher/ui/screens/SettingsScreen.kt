@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zirakusa.launcher.BuildConfig
 import com.zirakusa.launcher.R
+import com.zirakusa.launcher.data.HomeStyle
 import com.zirakusa.launcher.data.Settings
 import com.zirakusa.launcher.mcp.McpMode
 import com.zirakusa.launcher.mcp.RelayLink
@@ -97,6 +98,18 @@ enum class Section { MENU, HOME, DRAWER, THEMES, ABOUT }
                 Category(Icons.Outlined.Info, Color(0xFF8C93A3), R.string.about, R.string.cat_about_hint) { state.section = Section.ABOUT }
             }
             Section.HOME -> Group {
+                Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Text(stringResource(R.string.style), fontSize = 18.sp)
+                    Segmented(listOf(stringResource(R.string.style_classic), stringResource(R.string.style_list)), state.style.ordinal, Modifier.fillMaxWidth()) {
+                        state.changeStyle(HomeStyle.entries[it])
+                    }
+                    Text(stringResource(if (state.style == HomeStyle.LIST) R.string.style_list_hint else R.string.style_classic_hint), color = HomeColors.Muted, fontSize = 14.sp)
+                }
+                Divider()
+                SwitchItem(stringResource(R.string.calendar_preview), stringResource(R.string.calendar_preview_hint), state.calendarPreview, onChange = state::changeCalendarPreview)
+                Divider()
+                SwitchItem(stringResource(R.string.suggest), stringResource(R.string.suggest_hint), state.suggest, onChange = state::changeSuggest)
+                Divider()
                 Item(stringResource(R.string.default_home), stringResource(if (state.isDefault) R.string.default_yes else R.string.default_no), onClick = actions.makeDefault)
                 Divider()
                 SwitchItem(stringResource(R.string.show_clock), stringResource(R.string.show_clock_hint), state.showClock, onChange = state::changeClock)
@@ -114,6 +127,8 @@ enum class Section { MENU, HOME, DRAWER, THEMES, ABOUT }
                 SwitchItem(stringResource(R.string.family_first), stringResource(R.string.family_first_hint), state.familyFirst, onChange = state::changeFamilyFirst)
                 Divider()
                 SwitchItem(stringResource(R.string.show_recent), null, state.showRecent, onChange = state::changeShowRecent)
+                Divider()
+                SwitchItem(stringResource(R.string.sort_usage), stringResource(R.string.sort_usage_hint), state.sortByUsage, onChange = state::changeSortByUsage)
                 Divider()
                 Item(stringResource(R.string.hidden_apps), state.hidden.size.toString()) { state.page = Page.HIDDEN }
             }

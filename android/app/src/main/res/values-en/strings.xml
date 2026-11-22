@@ -141,4 +141,15 @@
     <string name="cat_today">Today</string>
     <string name="cat_today_hint">Edit this view: cards and their order</string>
     <string name="cat_about_hint">Version and privacy policy</string>
+    <string name="style">Design</string>
+    <string name="style_classic">Classic</string>
+    <string name="style_list">List</string>
+    <string name="style_classic_hint">Clock, Family row, search and an icon dock.</string>
+    <string name="style_list_hint">Clock, your favourites as a list and the alphabet on the right: slide over the letters and let go to open that letter.</string>
+    <string name="calendar_preview">Calendar preview</string>
+    <string name="calendar_preview_hint">Today\'s first event under the clock (with Calendario 0.2.0).</string>
+    <string name="suggest">Suggest frequent apps</string>
+    <string name="suggest_hint">In «List», fills your favourites with the apps you open most (up to 8).</string>
+    <string name="sort_usage">Sort by use</string>
+    <string name="sort_usage_hint">Inside each letter, the apps you open most first.</string>
 </resources>

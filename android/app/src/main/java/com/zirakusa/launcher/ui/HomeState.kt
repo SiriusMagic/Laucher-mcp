@@ -6,7 +6,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.zirakusa.launcher.data.AppEntry
 import com.zirakusa.launcher.data.Apps
+import com.zirakusa.launcher.data.CardKind
 import com.zirakusa.launcher.data.Cards
+import com.zirakusa.launcher.data.HomeStyle
+import com.zirakusa.launcher.data.ListStyle
 import com.zirakusa.launcher.data.Dock
 import com.zirakusa.launcher.data.Slot
 import com.zirakusa.launcher.data.FamilyCard
@@ -60,6 +63,12 @@ class HomeState(values: KeyValues, private val clock: () -> LocalDateTime = Loca
     var drawerOpened by mutableIntStateOf(0); private set
 
     var columns by mutableIntStateOf(settings.columns); private set
+    var style by mutableStateOf(settings.style); private set
+    var calendarPreview by mutableStateOf(settings.calendarPreview); private set
+    var suggest by mutableStateOf(settings.suggest); private set
+    var sortByUsage by mutableStateOf(settings.sortByUsage); private set
+    /** The letter the drawer should show first (from the alphabet on the home screen), or null. */
+    var jumpTo by mutableStateOf<Char?>(null)
     var familyFirst by mutableStateOf(settings.familyFirst); private set
     var wallpaper by mutableStateOf(settings.wallpaper); private set
     var showClock by mutableStateOf(settings.clock); private set
@@ -114,7 +123,7 @@ class HomeState(values: KeyValues, private val clock: () -> LocalDateTime = Loca
     fun nextStep() { if (step < 3) step++ else finishWelcome() }
     fun finishWelcome() { putDock(picked.take(Dock.MAX)); settings.onboarded = true; page = Page.HOME }
 
-    fun openDrawer(search: Boolean = false) { query = ""; drawerOpened++; page = Page.DRAWER; searching = search }
+    fun openDrawer(search: Boolean = false) { query = ""; jumpTo = null; drawerOpened++; page = Page.DRAWER; searching = search }
     /** The drawer opened from «Buscar apps»: the keyboard comes up. */
     var searching by mutableStateOf(false)
     fun home() { query = ""; menuFor = null; page = Page.HOME }
@@ -125,6 +134,19 @@ class HomeState(values: KeyValues, private val clock: () -> LocalDateTime = Loca
     private fun putDock(next: List<String>) { dock = next; settings.dock = next }
     fun hide(app: AppEntry) { hidden = hidden + app.key; settings.hidden = hidden; if (app.key in dock) removeFromDock(app) }
     fun unhide(app: AppEntry) { hidden = hidden - app.key; settings.hidden = hidden }
+
+    fun changeStyle(next: HomeStyle) { style = next; settings.style = next }
+    fun changeCalendarPreview(on: Boolean) { calendarPreview = on; settings.calendarPreview = on }
+    fun changeSuggest(on: Boolean) { suggest = on; settings.suggest = on }
+    fun changeSortByUsage(on: Boolean) { sortByUsage = on; settings.sortByUsage = on }
+    /** «Lista»: the favourites (dock first, then suggestions marked true). */
+    val favourites: List<Pair<AppEntry, Boolean>> get() = ListStyle.favourites(dockApps, frequent, suggest)
+    /** The drawer's apps in the order the settings ask. */
+    val drawerOrdered: List<AppEntry> get() = if (sortByUsage) ListStyle.byUsage(drawer, counts) else drawer
+    /** The first line of today's calendar card, for under the clock. */
+    val calendarLine: String? get() = if (!calendarPreview) null else cards.firstOrNull { it.app.pkg == CardKind.CALENDAR.pkg }?.lines?.firstOrNull()
+    /** The alphabet on the home screen: open the drawer at [letter]. */
+    fun openAt(letter: Char) { openDrawer(); jumpTo = letter }
 
     fun changeShowRecent(on: Boolean) { showRecent = on; settings.showRecent = on }
     fun changeColumns(n: Int) { columns = n; settings.columns = n }

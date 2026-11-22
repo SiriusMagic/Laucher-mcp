@@ -1,3 +1,14 @@
+# Inicio 0.4.0
+
+- **Diseño «Lista»** (Ajustes › Pantalla de inicio › Diseño: Clásico / Lista): reloj grande, fecha y el primer evento
+  de hoy; tus favoritas en lista con su nombre (el dock primero y, si quieres, completada con tus apps más abiertas
+  hasta 8); el **alfabeto a la derecha**: desliza el dedo y las letras se apartan como una onda; al soltar (o tocar) se
+  abre la lista de apps en esa letra, con las demás atenuadas. Botón de búsqueda abajo; mantener pulsado abre Ajustes.
+- **Cajón en lista** con letras de sección (en el diseño «Lista»).
+- **Ordenar según su uso** dentro de cada letra (Ajustes › Cajón de apps).
+- **Vista previa del calendario** bajo el reloj y **Sugerir apps frecuentes** (Ajustes › Pantalla de inicio).
+- 16 pruebas.
+
 # Inicio 0.3.0
 
 - **Editar esta vista** («Hoy»): activar, ocultar y ordenar las tarjetas (Reloj, Calendario, Notas, Documentos, Apps
