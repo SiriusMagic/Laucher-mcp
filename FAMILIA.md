@@ -81,6 +81,13 @@ aquí el suyo:
 | `cld_` | Calendario (desde 0.3.0; antes `cal_`, repetido) | `calendar_` |
 | `ini_` | Inicio | `launcher_` |
 | `stv_` | Stone Video (desde 0.4.0; antes `stn_`, repetido) | — |
+| `qrc_` | QR | `qr_` |
+| `cli_` | Clima (reservado) | `weather_` |
+| `red_` | Analizar redes (reservado) | `network_` |
+| `con_` | Contactos (reservado) | `contacts_` |
+| `cam_` | Cámara (reservado) | `camera_` |
+| `tel_` | Teléfono (reservado) | `phone_` |
+| `sms_` | SMS (reservado) | `sms_` |
 
 
 ## 9. Seguridad del token del propietario del hub
