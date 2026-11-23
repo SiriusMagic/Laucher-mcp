@@ -83,11 +83,11 @@ aquí el suyo:
 | `stv_` | Stone Video (desde 0.4.0; antes `stn_`, repetido) | — |
 | `qrc_` | QR | `qr_` |
 | `cli_` | Clima | `weather_` |
-| `red_` | Analizar redes (reservado) | `network_` |
-| `con_` | Contactos (reservado) | `contacts_` |
-| `cam_` | Cámara (reservado) | `camera_` |
-| `tel_` | Teléfono (reservado) | `phone_` |
-| `sms_` | SMS (reservado) | `sms_` |
+| `red_` | Redes (Analizar redes) | `network_` |
+| `con_` | Contactos | `contacts_` |
+| `cam_` | Cámara | `camera_` |
+| `tel_` | Teléfono | `phone_` |
+| `sms_` | SMS | `sms_` |
 
 
 ## 9. Seguridad del token del propietario del hub
