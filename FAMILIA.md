@@ -94,3 +94,24 @@ aquí el suyo:
 `HUB_TOKEN` es el único secreto que elige una persona y abre el hub y, a través de él, los teléfonos. Desde Gateway Hub
 0.0.3 el hub no abre con un token débil (menos de 32 caracteres, poca variedad o secuencias). Créalo con
 `openssl rand -base64 32 | npx wrangler secret put HUB_TOKEN`. Los tokens de las apps son siempre aleatorios (256 bits).
+
+## 10. Órdenes entre apps (Asistente)
+El Asistente (en la app de Gateway Hub) habla con las apps como lo haría cualquier asistente de Android. Cada app acepta
+las **órdenes estándar** que le tocan y, cuando no hay una estándar, la **orden de la familia**:
+
+| Orden | Quién la acepta | Qué hace |
+|---|---|---|
+| `android.media.action.MEDIA_PLAY_FROM_SEARCH` (`query` vacío = aleatorio) | Stone | Reproduce: todo en aleatorio, o lo que coincida con `query` |
+| `com.zirakusa.family.action.PLAY_RECOMMENDED` | Stone | Reproduce las recomendaciones del día |
+| `android.intent.action.SET_ALARM` / `SET_TIMER` (`EXTRA_SKIP_UI`) | Reloj | Crea la alarma o el temporizador |
+| `android.intent.action.DIAL` (`tel:`) | Teléfono | Abre el número en el teclado; la persona pulsa «Llamar» |
+| `android.intent.action.SENDTO` (`smsto:`, `sms_body`) | SMS | Abre la conversación con el texto; la persona pulsa «Enviar» |
+| `android.media.action.STILL_IMAGE_CAMERA` | Cámara | Abre la cámara (nunca dispara sola) |
+
+Reglas:
+- Las órdenes de la familia (`com.zirakusa.family.action.*`) se declaran en una actividad con
+  `android:permission="com.zirakusa.family.permission.ACT"` (firma): solo las apps firmadas por el mismo desarrollador
+  pueden enviarlas. La app que las envía también usa ese permiso; cualquiera de las dos lo declara.
+- Llamar, enviar y fotografiar **siempre** terminan en un toque de la persona.
+- El Asistente lee los resúmenes de §7 para responder («¿qué tiempo hace?», «¿qué tengo hoy?»).
+- Si una app aún no acepta una orden, el Asistente la abre y sigue: nada se rompe con versiones viejas.
