@@ -12,8 +12,8 @@ android {
         applicationId = "com.zirakusa.launcher"
         minSdk = 26
         targetSdk = 36
-        versionCode = 6
-        versionName = "0.5.1"
+        versionCode = 7
+        versionName = "0.5.2"
         // Modo MCP: the same public relay as Stone, Luma, Calculadora and Notas (one device id per app). Empty = no MCP.
         val relayUrl = (project.findProperty("inicioRelayUrl") as String?).orEmpty().trimEnd('/')
         buildConfigField("String", "RELAY_URL", "\"$relayUrl\"")

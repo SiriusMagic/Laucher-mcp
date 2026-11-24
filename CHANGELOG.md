@@ -1,3 +1,7 @@
+# Inicio 0.5.2
+
+- **Sin puntos rojos**: las apps de la familia ya no llevan un punto en su icono.
+
 # Inicio 0.5.1
 
 - **Conectar todas** (Gateway Hub 0.0.21): con un toque en el Hub se activa aquí «Redireccionar a Hub» y la app queda
