@@ -1,5 +1,7 @@
 package com.zirakusa.launcher.ui.screens
 
+import com.zirakusa.launcher.IconCard
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -132,7 +134,10 @@ enum class Section { MENU, HOME, DRAWER, THEMES, ABOUT }
                 Divider()
                 Item(stringResource(R.string.hidden_apps), state.hidden.size.toString()) { state.page = Page.HIDDEN }
             }
-            Section.THEMES -> ThemeCard(state.themeMode, state.accent, state::changeTheme, state::changeAccent)
+            Section.THEMES -> {
+                ThemeCard(state.themeMode, state.accent, state::changeTheme, state::changeAccent)
+                IconCard(HomeColors.Card, HomeColors.Text, HomeColors.Muted, HomeColors.Accent, androidx.compose.ui.graphics.Color(0xFF000000))
+            }
             Section.ABOUT -> Group {
                 Item(stringResource(R.string.privacy), null) { privacy = true }
                 Divider()

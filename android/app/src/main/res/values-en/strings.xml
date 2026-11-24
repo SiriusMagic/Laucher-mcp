@@ -153,4 +153,11 @@
     <string name="sort_usage">Sort by use</string>
     <string name="sort_usage_hint">Inside each letter, the apps you open most first.</string>
     <string name="nothing_pending">Nothing pending</string>
+    <string name="icon_title">App icon</string>
+    <string name="icon_original">Original</string>
+    <string name="icon_light">Light</string>
+    <string name="icon_gold">Gold</string>
+    <string name="icon_blue">Blue</string>
+    <string name="icon_green">Green</string>
+    <string name="icon_hint">Changes the home-screen icon. Some launchers take a few seconds to show it.</string>
 </resources>
