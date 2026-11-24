@@ -80,6 +80,7 @@ aquí el suyo:
 | `rel_` | Reloj | `clock_` |
 | `cld_` | Calendario (desde 0.3.0; antes `cal_`, repetido) | `calendar_` |
 | `ini_` | Inicio | `launcher_` |
+| `grb_` | Grabadora | `rec_` |
 | `stv_` | Stone Video (desde 0.4.0; antes `stn_`, repetido) | — |
 | `qrc_` | QR | `qr_` |
 | `cli_` | Clima | `weather_` |
