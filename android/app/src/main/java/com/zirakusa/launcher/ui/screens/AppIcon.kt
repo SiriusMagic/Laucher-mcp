@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.PlaylistAdd
@@ -56,7 +55,6 @@ import kotlinx.coroutines.withContext
         else Box(Modifier.size(size).clip(RoundedCornerShape(size * 0.3f)).background(placeholder(app)), contentAlignment = Alignment.Center) {
             Text(Apps.letter(app).toString(), color = Color.White, fontSize = (size.value * 0.42f).sp, fontWeight = FontWeight.Medium)
         }
-        if (app.family) Box(Modifier.align(Alignment.TopEnd).size(size * 0.28f).clip(CircleShape).background(HomeColors.Accent))
     }
 }
 
