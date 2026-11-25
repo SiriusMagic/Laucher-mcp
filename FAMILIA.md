@@ -42,7 +42,7 @@ Ser encontrada no enciende nada. El módulo es el prefijo de sus herramientas (`
 
 ## 5. Privacidad
 - Sin anuncios ni estadísticas. `allowBackup=false` y reglas que excluyen todo de las copias.
-- Internet solo para el Modo MCP. Nada sale del teléfono si el usuario no lo activa.
+- Internet para el Modo MCP que activa la persona. En Lucía, también se permiten las acciones que pide expresamente: consultar un repositorio, descargar un modelo desde Modelos o abrir una búsqueda en el navegador. El reconocimiento de voz y la conversación local se procesan en el teléfono. El audio y las transcripciones del reconocedor se quedan en el dispositivo.
 
 ## 6. Versiones
 - `versionCode` y `versionName` suben juntos; el APK firmado se copia a `android/<App>-<versión>.apk` (se borra el
@@ -106,7 +106,8 @@ las **órdenes estándar** que le tocan y, cuando no hay una estándar, la **ord
 | `android.media.action.MEDIA_PLAY_FROM_SEARCH` (`query` vacío = aleatorio) | Stone | Reproduce: todo en aleatorio, o lo que coincida con `query` |
 | `com.zirakusa.family.action.PLAY_RECOMMENDED` | Stone | Reproduce las recomendaciones del día |
 | `android.intent.action.SET_ALARM` / `SET_TIMER` (`EXTRA_SKIP_UI`) | Reloj | Crea la alarma o el temporizador |
-| `android.intent.action.DIAL` (`tel:`) | Teléfono | Abre el número en el teclado; la persona pulsa «Llamar» |
+| `android.intent.action.DIAL` (`tel:`) | Teléfono | Abre el número en el teclado para que la persona pulse «Llamar» |
+| `android.intent.action.CALL` (`tel:`) | Android | Lucía inicia una llamada tras identificar el contacto o confirmar el número, recibir un «sí» explícito y contar con el permiso de llamadas |
 | `android.intent.action.SENDTO` (`smsto:`, `sms_body`) | SMS | Abre la conversación con el texto; la persona pulsa «Enviar» |
 | `android.media.action.STILL_IMAGE_CAMERA` | Cámara | Abre la cámara (nunca dispara sola) |
 
@@ -114,6 +115,6 @@ Reglas:
 - Las órdenes de la familia (`com.zirakusa.family.action.*`) se declaran en una actividad con
   `android:permission="com.zirakusa.family.permission.ACT"` (firma): solo las apps firmadas por el mismo desarrollador
   pueden enviarlas. La app que las envía también usa ese permiso; cualquiera de las dos lo declara.
-- Llamar, enviar y fotografiar **siempre** terminan en un toque de la persona.
+- Enviar mensajes y fotografiar requieren un toque final. Para llamadas, Lucía muestra o lee el destinatario y espera la confirmación explícita. Si el contacto es ambiguo, pide aclararlo. El modo MCP carece de acceso a esa confirmación y a la llamada directa.
 - El Asistente lee los resúmenes de §7 para responder («¿qué tiempo hace?», «¿qué tengo hoy?»).
 - Si una app aún no acepta una orden, el Asistente la abre y sigue: nada se rompe con versiones viejas.
