@@ -34,7 +34,7 @@ import com.zirakusa.launcher.ui.Page
 import com.zirakusa.launcher.ui.theme.HomeColors
 
 /** «Editar esta vista»: every card of «Hoy» with its switch and arrows to order it; live or preview; your AI can do the same by MCP. */
-@Composable fun CardsScreen(state: HomeState) = Column(Modifier.fillMaxSize().background(HomeColors.Background).systemBarsPadding()
+@Composable fun CardsScreen(state: HomeState, openArka: () -> Unit = {}) = Column(Modifier.fillMaxSize().background(HomeColors.Background).systemBarsPadding()
     .verticalScroll(rememberScrollState()).padding(horizontal = 16.dp)) {
     PageTop(stringResource(R.string.edit_view)) { state.page = state.cardsBack }
     Text(stringResource(R.string.edit_view_hint), Modifier.padding(start = 4.dp, bottom = 12.dp), color = HomeColors.Muted, fontSize = 15.sp)
@@ -60,6 +60,6 @@ import com.zirakusa.launcher.ui.theme.HomeColors
         }
     }
     Group(Modifier.padding(vertical = 12.dp)) {
-        Item(stringResource(R.string.mcp_title), stringResource(if (McpMode.active) R.string.mcp_cards_on else R.string.mcp_cards_off)) { state.page = Page.MCP }
+        Item(stringResource(R.string.mcp_title), stringResource(if (McpMode.remote) R.string.mcp_cards_on else R.string.mcp_cards_off), onClick = openArka)
     }
 }

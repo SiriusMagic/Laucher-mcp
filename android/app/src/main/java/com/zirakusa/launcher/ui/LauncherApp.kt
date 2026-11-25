@@ -12,7 +12,6 @@ import com.zirakusa.launcher.ui.screens.FeedScreen
 import com.zirakusa.launcher.ui.screens.WelcomeScreen
 import com.zirakusa.launcher.ui.screens.HiddenScreen
 import com.zirakusa.launcher.ui.screens.HomeScreen
-import com.zirakusa.launcher.ui.screens.McpScreen
 import com.zirakusa.launcher.ui.screens.SettingsScreen
 import kotlinx.coroutines.delay
 
@@ -32,7 +31,7 @@ class AppActions(
     val makeDefault: () -> Unit = {},
     val toast: (Int) -> Unit = {},
     val copy: (String) -> Unit = {},
-    val goToHub: () -> Unit = {},
+    val openArka: () -> Unit = {},
 )
 
 /** The whole launcher: home, the drawer or a settings page; the app menu over any of them. [ticking] moves the clock. */
@@ -46,12 +45,11 @@ class AppActions(
     when (state.page) {
         Page.HOME -> if (state.editing) com.zirakusa.launcher.ui.screens.EditHome(state, actions) else HomeScreen(state, actions)
         Page.FEED -> FeedScreen(state, actions)
-        Page.CARDS -> CardsScreen(state)
+        Page.CARDS -> CardsScreen(state, actions.openArka)
         Page.WELCOME -> WelcomeScreen(state, actions)
         Page.DRAWER -> DrawerScreen(state, actions)
         Page.SETTINGS -> SettingsScreen(state, actions)
         Page.HIDDEN -> HiddenScreen(state, actions)
-        Page.MCP -> McpScreen(actions.copy, actions.goToHub) { state.page = Page.SETTINGS }
     }
     AppMenu(state, actions)
 }

@@ -66,7 +66,7 @@ object PhoneApps {
 
     /** An adaptive icon's layers (108 dp, the middle 72 dp visible) drawn inside [shape]. */
     private fun shaped(d: android.graphics.drawable.AdaptiveIconDrawable, size: Int, shape: IconShape): android.graphics.Bitmap {
-        val bmp = android.graphics.Bitmap.createBitmap(size, size, android.graphics.Bitmap.Config.ARGB_8888)
+        val bmp = androidx.core.graphics.createBitmap(size, size)
         val canvas = android.graphics.Canvas(bmp)
         val r = size * shape.corner
         canvas.clipPath(android.graphics.Path().apply { addRoundRect(0f, 0f, size.toFloat(), size.toFloat(), r, r, android.graphics.Path.Direction.CW) })

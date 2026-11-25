@@ -3,8 +3,6 @@ package com.zirakusa.launcher
 import android.app.role.RoleManager
 import android.content.ActivityNotFoundException
 import android.content.BroadcastReceiver
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -61,7 +59,7 @@ class MainActivity : ComponentActivity() {
             info = { start(PhoneApps.info(it.pkg)) }, uninstall = { start(PhoneApps.uninstall(it.pkg)) },
             clock = { start(PhoneApps.clock(this)) }, calendar = { start(PhoneApps.calendar(this)) },
             wallpaper = { start(Intent.createChooser(Intent(Intent.ACTION_SET_WALLPAPER), getString(R.string.wallpaper_change))) },
-            systemSettings = { start(Intent(Settings.ACTION_SETTINGS)) }, makeDefault = ::makeDefault, toast = { Toast.makeText(this, it, Toast.LENGTH_SHORT).show() }, copy = ::copy, goToHub = ::goToHub)
+            systemSettings = { start(Intent(Settings.ACTION_SETTINGS)) }, makeDefault = ::makeDefault, toast = { Toast.makeText(this, it, Toast.LENGTH_SHORT).show() }, openArka = ::openArka)
         setContent {
             HomeTheme(state.themeMode, state.accent) {
                 val light = HomeColors.isLight && !(state.wallpaper && state.page == Page.HOME)
@@ -70,7 +68,7 @@ class MainActivity : ComponentActivity() {
                     when {
                         state.page == Page.HOME && state.editSheet != null -> state.editSheet = null
                         state.page == Page.HOME && state.editing -> state.stopEditing()
-                        state.page == Page.HIDDEN || state.page == Page.MCP -> state.page = Page.SETTINGS
+                        state.page == Page.HIDDEN -> state.page = Page.SETTINGS
                         state.page == Page.CARDS -> state.page = state.cardsBack
                         state.page == Page.SETTINGS && state.section != com.zirakusa.launcher.ui.screens.Section.MENU -> state.section = com.zirakusa.launcher.ui.screens.Section.MENU
                         state.page == Page.WELCOME -> state.finishWelcome()
@@ -129,15 +127,9 @@ class MainActivity : ComponentActivity() {
         start(Intent(Settings.ACTION_HOME_SETTINGS))
     }
 
-    private fun copy(link: String) {
-        getSystemService(ClipboardManager::class.java)?.setPrimaryClip(ClipData.newPlainText("Inicio MCP", link))
-        Toast.makeText(this, R.string.copied, Toast.LENGTH_SHORT).show()
-    }
-
-    /** «Ir al Hub»: copies the hub's link (in case it must be pasted) and opens the Gateway Hub app. */
-    private fun goToHub() {
-        getSystemService(ClipboardManager::class.java)?.setPrimaryClip(ClipData.newPlainText("Inicio › Gateway Hub", McpMode.hubLink()))
+    /** «Modo MCP» in Ajustes: it is turned on, allowed on the phone and given tokens in Arka, so this opens Arka. */
+    private fun openArka() {
         val open = packageManager.getLaunchIntentForPackage("com.zirakusa.gatewayhub")
-        if (open != null) startActivity(open) else Toast.makeText(this, R.string.mcp_paste_in_hub, Toast.LENGTH_LONG).show()
+        if (open != null) startActivity(open) else Toast.makeText(this, R.string.mcp_no_arka, Toast.LENGTH_LONG).show()
     }
 }

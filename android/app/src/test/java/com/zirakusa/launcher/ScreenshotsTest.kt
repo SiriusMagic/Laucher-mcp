@@ -110,9 +110,6 @@ class ScreenshotsTest {
         shot("hidden")
         compose.onNodeWithText("Mostrar").performClick()
         assertTrue(state.hidden.isEmpty())
-        state.page = Page.MCP
-        compose.onNodeWithText("Redireccionar a Hub").assertExists()
-        shot("mcp")
         state.changeTheme(ThemeMode.LIGHT)
         state.openDrawer()
         shot("drawer-light")

@@ -23,7 +23,7 @@ import com.zirakusa.launcher.ui.theme.ThemeMode
 import java.time.LocalDateTime
 
 /** Where the user is. */
-enum class Page { HOME, FEED, CARDS, DRAWER, SETTINGS, HIDDEN, MCP, WELCOME }
+enum class Page { HOME, FEED, CARDS, DRAWER, SETTINGS, HIDDEN, WELCOME }
 
 /**
  * The only owner of what the screens show: the phone's apps, the dock, the hidden apps, the drawer's search and the
