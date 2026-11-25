@@ -22,16 +22,24 @@ En la actividad principal:
 ```
 Ser encontrada no enciende nada. El módulo es el prefijo de sus herramientas (`clock_`, `calendar_`, `launcher_`…).
 
-## 3. Modo MCP
-- Apagado de fábrica. «Activar MCP» o «Redireccionar a Hub», en **Ajustes › Modo MCP** (siempre en Ajustes).
-- Mismo relay público de Stone (WebSocket saliente, solo https/wss); un id de dispositivo por app.
-- Tokens: prefijo propio de 3 letras + 256 bits, cifrados con el Keystore (`SecretBox`),
-  de tipo LLM, Hub o Redirect, lectura o lectura y escritura, con caducidad, pausa y revocar.
+## 3. Modo MCP (lo controla Arka)
+- Ninguna app tiene pantalla propia de Modo MCP: **Arka › MCP** lo **activa** (todas o una a una), lo **permite en
+  local** (Lucía y las reglas de sentimiento usan las herramientas en el teléfono, sin internet) y **crea los tokens**
+  de cada IA (Agentes del hub). En Ajustes de cada app, «Modo MCP» solo muestra el estado y abre Arka.
+- Canal con firma `content://${applicationId}.hublink` (permiso `com.zirakusa.gatewayhub.permission.LINK` y
+  `checkSignatures` en el proveedor): `link` (el enlace del hub, solo con el enlace público encendido), `connect` /
+  `disconnect` (enciende o apaga el enlace público; el toque en Arka es el consentimiento), `status` (`remote`,
+  `state`) y `tool` (una petición JSON-RPC para Lucía, en el teléfono).
+- Apagado de fábrica. Mismo relay público de Stone (WebSocket saliente, solo https/wss); un id de dispositivo por app.
+- Un solo token por app, el de Arka: prefijo propio de 3 letras + 256 bits, cifrado con el Keystore (`SecretBox`). Al
+  actualizar se conserva el de «Redireccionar a Hub» (el enlace del hub sigue valiendo); los LLM/Hub de antes se borran.
 - `McpHandler`: JSON-RPC (Streamable HTTP), token comparado en tiempo constante, 120 peticiones por minuto, 1 MiB máx.
 - Herramientas: nombres `<modulo>_<verbo>`, argumentos con esquema estricto (`additionalProperties: false`), errores
   con código en `structuredContent.error.code`: `BAD_ARGUMENT`, `NOT_FOUND`, `READ_ONLY`, `UNKNOWN_TOOL` y los propios.
-  Las que cambian algo no se listan a un token de solo lectura.
+  Las que cambian algo no se listan a un token de solo lectura (los permisos de cada IA se ponen en el hub).
 - Cada herramienta lleva prueba en `McpTest`: lista, llamada correcta, argumentos malos y «no encontrado».
+- Un ajuste de privacidad propio de una app (p. ej. Grabadora › «Dejar que la IA escuche las grabaciones») vive en
+  sus Ajustes, nunca en Arka.
 
 ## 4. Código
 - `data/`: reglas puras, sin Android, con pruebas. `ui/`: un único estado (`…State`) y pantallas que solo pintan.
@@ -42,7 +50,7 @@ Ser encontrada no enciende nada. El módulo es el prefijo de sus herramientas (`
 
 ## 5. Privacidad
 - Sin anuncios ni estadísticas. `allowBackup=false` y reglas que excluyen todo de las copias.
-- Internet solo para el Modo MCP. Nada sale del teléfono si el usuario no lo activa.
+- Internet solo para el Modo MCP. Nada sale del teléfono si el usuario no lo activa en Arka.
 
 ## 6. Versiones
 - `versionCode` y `versionName` suben juntos; el APK firmado se copia a `android/<App>-<versión>.apk` (se borra el
