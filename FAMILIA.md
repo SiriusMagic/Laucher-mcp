@@ -42,7 +42,7 @@ Ser encontrada no enciende nada. El módulo es el prefijo de sus herramientas (`
 
 ## 5. Privacidad
 - Sin anuncios ni estadísticas. `allowBackup=false` y reglas que excluyen todo de las copias.
-- Internet para el Modo MCP que activa la persona. En Lucía, también se permiten las acciones que pide expresamente: consultar un repositorio, descargar un modelo desde Modelos o abrir una búsqueda en el navegador. El reconocimiento de voz y la conversación local se procesan en el teléfono. El audio y las transcripciones del reconocedor se quedan en el dispositivo.
+- Internet para el Modo MCP que activa la persona. En Lucía, también se permiten las acciones que pide expresamente: consultar un repositorio, descargar un modelo desde Modelos o abrir una búsqueda en el navegador. El audio y el reconocimiento de voz se quedan en el teléfono, igual que la conversación local. Una búsqueda o descarga explícita usa solo los datos de esa petición.
 
 ## 6. Versiones
 - `versionCode` y `versionName` suben juntos; el APK firmado se copia a `android/<App>-<versión>.apk` (se borra el
