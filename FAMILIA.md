@@ -6,7 +6,8 @@ familia: las reconoce por este contrato y las muestra juntas.
 
 ## 1. Identidad
 - Paquete `com.zirakusa.<app>`; nombre corto en español (`Reloj`, `Calendario`).
-- Firma: la de depuración del entorno (Gateway Hub reconoce al mismo desarrollador).
+- Firma: la de depuración del entorno (Gateway Hub reconoce al mismo desarrollador). Huella, cómo usarla desde otro
+  entorno (GPT/Codex) y la lista de repos: [`GUIA-AGENTES.md`](GUIA-AGENTES.md).
 - Kotlin + Compose, misma cadena de herramientas (AGP, Kotlin, BOM de Compose, OkHttp) en todas; se actualizan juntas.
 
 ## 2. Ser encontrada (Gateway Hub e Inicio)
