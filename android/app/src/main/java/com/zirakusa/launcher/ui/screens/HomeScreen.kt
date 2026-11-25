@@ -64,6 +64,7 @@ import java.time.format.DateTimeFormatter
     val ink = if (state.wallpaper) Color.White else HomeColors.Text
     Box(Modifier.fillMaxSize().background(if (state.wallpaper) Brush.verticalGradient(listOf(Color(0x66000000), Color.Transparent, Color(0x88000000)))
         else Brush.verticalGradient(listOf(HomeColors.Background, HomeColors.Background)))
+        .pinchIn(state::startEditing)
         .combinedClickable(onClick = {}, onLongClick = { menu = true })
         .pointerInput(Unit) { var total = 0f; detectVerticalDragGestures(onDragStart = { total = 0f },
             onDragEnd = { if (total < -60.dp.toPx()) state.openDrawer() }) { _, dy -> total += dy } }
@@ -94,6 +95,7 @@ import java.time.format.DateTimeFormatter
         }
         Box(Modifier.align(Alignment.Center)) {
             DropdownMenu(menu, { menu = false }) {
+                DropdownMenuItem({ Text(stringResource(R.string.edit_home)) }, { menu = false; state.startEditing() })
                 DropdownMenuItem({ Text(stringResource(R.string.wallpaper_change)) }, { menu = false; actions.wallpaper() },
                     leadingIcon = { Icon(Icons.Outlined.Wallpaper, null) })
                 DropdownMenuItem({ Text(stringResource(R.string.today_page)) }, { menu = false; state.page = Page.FEED })

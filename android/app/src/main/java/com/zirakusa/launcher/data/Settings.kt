@@ -48,6 +48,8 @@ class Settings(private val kv: KeyValues) {
     var suggest: Boolean get() = flag("suggest", true); set(v) = setFlag("suggest", v)
     /** «Ordenar según su uso» inside each letter of the drawer. */
     var sortByUsage: Boolean get() = flag("sort_usage", false); set(v) = setFlag("sort_usage", v)
+    /** «Estilo de iconos» (the system's shape by default). */
+    var iconShape: IconShape get() = IconShape.from(kv.get("icon_shape")); set(v) = kv.put("icon_shape", v.key)
     var theme: String? get() = kv.get("theme"); set(v) = kv.put("theme", v)
     var accent: String? get() = kv.get("accent"); set(v) = kv.put("accent", v)
 

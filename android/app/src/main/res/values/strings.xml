@@ -167,4 +167,14 @@
     <string name="icon_blue">Azul</string>
     <string name="icon_green">Verde</string>
     <string name="icon_hint">Cambia el icono de la pantalla de inicio. Algunos lanzadores tardan unos segundos en mostrarlo.</string>
+    <!-- «Editar inicio» (pinch the home screen with two fingers). -->
+    <string name="edit_home">Editar inicio</string>
+    <string name="edit_wallpaper">Fondo de pantalla</string>
+    <string name="edit_widgets">Widgets</string>
+    <string name="edit_icons">Estilo de iconos</string>
+    <string name="shape_system">Original</string>
+    <string name="shape_circle">Círculo</string>
+    <string name="shape_rounded">Redondeado</string>
+    <string name="shape_square">Cuadrado</string>
+    <string name="icon_shape_hint">La forma de todos los iconos en el inicio, el dock y el cajón. «Original» deja la de cada app.</string>
 </resources>

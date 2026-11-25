@@ -1,5 +1,6 @@
 package com.zirakusa.launcher
 
+import com.zirakusa.launcher.data.IconShape
 import android.app.AlarmManager
 import android.content.ComponentName
 import android.content.Context
@@ -50,9 +51,29 @@ object PhoneApps {
     }
 
     /** The app's icon, kept in memory once drawn. */
-    fun icon(context: Context, app: AppEntry, size: Int): ImageBitmap? = icons[app.key] ?: runCatching {
-        context.packageManager.getActivityIcon(ComponentName(app.pkg, app.activity)).toBitmap(size, size).asImageBitmap()
-    }.getOrNull()?.also { icons[app.key] = it }
+    /**
+     * The app's icon at [size] px. With an «Estilo de iconos» other than the system's, an adaptive icon's own layers
+     * (background and foreground) are cut to that shape, so every icon looks alike; older icons are drawn as they are.
+     */
+    fun icon(context: Context, app: AppEntry, size: Int, shape: IconShape = IconShape.SYSTEM): ImageBitmap? {
+        val key = "${app.key}|${shape.key}|$size"
+        return icons[key] ?: runCatching {
+            val d = context.packageManager.getActivityIcon(ComponentName(app.pkg, app.activity))
+            if (shape == IconShape.SYSTEM || d !is android.graphics.drawable.AdaptiveIconDrawable) d.toBitmap(size, size).asImageBitmap()
+            else shaped(d, size, shape).asImageBitmap()
+        }.getOrNull()?.also { icons[key] = it }
+    }
+
+    /** An adaptive icon's layers (108 dp, the middle 72 dp visible) drawn inside [shape]. */
+    private fun shaped(d: android.graphics.drawable.AdaptiveIconDrawable, size: Int, shape: IconShape): android.graphics.Bitmap {
+        val bmp = android.graphics.Bitmap.createBitmap(size, size, android.graphics.Bitmap.Config.ARGB_8888)
+        val canvas = android.graphics.Canvas(bmp)
+        val r = size * shape.corner
+        canvas.clipPath(android.graphics.Path().apply { addRoundRect(0f, 0f, size.toFloat(), size.toFloat(), r, r, android.graphics.Path.Direction.CW) })
+        val pad = size / 4
+        listOfNotNull(d.background, d.foreground).forEach { layer -> layer.setBounds(-pad, -pad, size + pad, size + pad); layer.draw(canvas) }
+        return bmp
+    }
 
     fun forget(pkg: String) { icons.keys.removeAll { it.startsWith("$pkg/") } }
 

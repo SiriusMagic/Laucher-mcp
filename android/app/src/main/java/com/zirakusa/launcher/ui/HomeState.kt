@@ -1,5 +1,6 @@
 package com.zirakusa.launcher.ui
 
+import com.zirakusa.launcher.data.IconShape
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -28,6 +29,9 @@ enum class Page { HOME, FEED, CARDS, DRAWER, SETTINGS, HIDDEN, MCP, WELCOME }
  * The only owner of what the screens show: the phone's apps, the dock, the hidden apps, the drawer's search and the
  * settings. [clock] gives «now» (fixed in tests). The activity feeds [load]; the screens only read and call.
  */
+/** The sheets of «Editar inicio». */
+enum class EditSheet { WIDGETS, ICONS }
+
 class HomeState(values: KeyValues, private val clock: () -> LocalDateTime = LocalDateTime::now) {
     private val settings = Settings(values)
 
@@ -65,6 +69,11 @@ class HomeState(values: KeyValues, private val clock: () -> LocalDateTime = Loca
     var drawerOpened by mutableIntStateOf(0); private set
 
     var columns by mutableIntStateOf(settings.columns); private set
+    var iconShape by mutableStateOf(settings.iconShape); private set
+    /** «Editar inicio» (a pinch on the home screen): the home small in a card with Fondo · Widgets · Estilo de iconos · Ajustes. */
+    var editing by mutableStateOf(false)
+    /** The sheet open over «Editar inicio», if any. */
+    var editSheet by mutableStateOf<EditSheet?>(null)
     var style by mutableStateOf(settings.style); private set
     var calendarPreview by mutableStateOf(settings.calendarPreview); private set
     var suggest by mutableStateOf(settings.suggest); private set
@@ -152,6 +161,9 @@ class HomeState(values: KeyValues, private val clock: () -> LocalDateTime = Loca
 
     fun changeShowRecent(on: Boolean) { showRecent = on; settings.showRecent = on }
     fun changeColumns(n: Int) { columns = n; settings.columns = n }
+    fun changeIconShape(shape: IconShape) { iconShape = shape; settings.iconShape = shape }
+    fun startEditing() { if (page == Page.HOME) { editing = true; editSheet = null; menuFor = null } }
+    fun stopEditing() { editing = false; editSheet = null }
     fun changeFamilyFirst(on: Boolean) { familyFirst = on; settings.familyFirst = on }
     fun changeWallpaper(on: Boolean) { wallpaper = on; settings.wallpaper = on }
     fun changeClock(on: Boolean) { showClock = on; settings.clock = on }

@@ -65,6 +65,7 @@ import java.time.format.DateTimeFormatter
     val ink = if (state.wallpaper) Color.White else HomeColors.Text
     if (state.calendarPreview) LaunchedEffect(state.apps) { state.cards = withContext(Dispatchers.IO) { actions.cards(state.apps) } }
     Box(Modifier.fillMaxSize().background(if (state.wallpaper) Color(0x55000000) else HomeColors.Background)
+        .pinchIn(state::startEditing)
         .combinedClickableLong { state.section = Section.MENU; state.page = Page.SETTINGS }
         .pointerInput(Unit) { var total = 0f; detectHorizontalDragGestures(onDragStart = { total = 0f },
             onDragEnd = { if (total > 60.dp.toPx()) state.page = Page.FEED }) { _, dx -> total += dx } }

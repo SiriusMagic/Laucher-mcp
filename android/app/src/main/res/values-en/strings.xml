@@ -167,4 +167,13 @@
     <string name="icon_blue">Blue</string>
     <string name="icon_green">Green</string>
     <string name="icon_hint">Changes the home-screen icon. Some launchers take a few seconds to show it.</string>
+    <string name="edit_home">Edit home</string>
+    <string name="edit_wallpaper">Wallpaper</string>
+    <string name="edit_widgets">Widgets</string>
+    <string name="edit_icons">Icon style</string>
+    <string name="shape_system">Original</string>
+    <string name="shape_circle">Circle</string>
+    <string name="shape_rounded">Rounded</string>
+    <string name="shape_square">Square</string>
+    <string name="icon_shape_hint">The shape of every icon on the home screen, the dock and the drawer. «Original» keeps each app\'s own.</string>
 </resources>

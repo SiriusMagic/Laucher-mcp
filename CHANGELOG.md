@@ -1,3 +1,16 @@
+# Inicio 0.7.0: «Editar inicio» al pellizcar
+
+- **Pellizca la pantalla de inicio con dos dedos** (en cualquier diseño) y entras en **«Editar inicio»**, como en el
+  lanzador de tu teléfono: tu inicio se ve en pequeño y abajo aparecen cuatro botones. También desde el menú al mantener
+  pulsado el fondo. Tocar el inicio en pequeño o «Atrás» sale.
+  - **Fondo de pantalla**: el selector de fondos de Android.
+  - **Widgets**: el diseño (Widgets, Clásico o Lista), reloj y fecha, vista previa del calendario, apps sugeridas y
+    «Editar esta vista» (las tarjetas de «Hoy»). Los cambios se ven al momento en el inicio en pequeño.
+  - **Estilo de iconos**: la forma de todos los iconos (Original, Círculo, Redondeado o Cuadrado) en el inicio, el dock y
+    el cajón, y cuántas apps por fila (4 o 5).
+  - **Ajustes**: los Ajustes de Inicio.
+- 22 pruebas.
+
 # Inicio 0.6.0
 
 - **Nuevo diseño «Widgets»** (el de fábrica): reloj de agujas con segundero rojo, cuatro apps de la familia en círculos

@@ -18,7 +18,8 @@ import kotlinx.coroutines.delay
 
 /** What the screens ask of the phone (the activity gives the real ones; tests leave the defaults). */
 class AppActions(
-    val icon: (AppEntry, Int) -> ImageBitmap? = { _, _ -> null },
+    /** The app's icon at a size in px, cut to «Estilo de iconos». */
+    val icon: (AppEntry, Int, com.zirakusa.launcher.data.IconShape) -> ImageBitmap? = { _, _, _ -> null },
     /** «Hoy»: the family apps' cards (slow; called off the main thread). */
     val cards: (List<AppEntry>) -> List<FamilyCard> = { emptyList() },
     val open: (AppEntry) -> Unit = {},
@@ -37,8 +38,13 @@ class AppActions(
 /** The whole launcher: home, the drawer or a settings page; the app menu over any of them. [ticking] moves the clock. */
 @Composable fun LauncherApp(state: HomeState, actions: AppActions = AppActions(), ticking: Boolean = true) {
     if (ticking) LaunchedEffect(Unit) { while (true) { state.tick(); delay(1000) } }
+    // «Estilo de iconos» reaches every icon on every page.
+    androidx.compose.runtime.CompositionLocalProvider(com.zirakusa.launcher.ui.screens.LocalIconShape provides state.iconShape) { Pages(state, actions) }
+}
+
+@Composable private fun Pages(state: HomeState, actions: AppActions) {
     when (state.page) {
-        Page.HOME -> HomeScreen(state, actions)
+        Page.HOME -> if (state.editing) com.zirakusa.launcher.ui.screens.EditHome(state, actions) else HomeScreen(state, actions)
         Page.FEED -> FeedScreen(state, actions)
         Page.CARDS -> CardsScreen(state)
         Page.WELCOME -> WelcomeScreen(state, actions)

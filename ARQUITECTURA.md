@@ -16,3 +16,6 @@ Reglas:
 - El tema de la ventana muestra el fondo del teléfono; si el usuario lo apaga, se pinta el color del tema.
 - Texto visible en `res/values/strings.xml` (español) y `values-en`. Colores desde `HomeColors`.
 - `ScreenshotsTest` usa una lista de apps falsa (sin iconos: salen las letras) y el sábado 21 de noviembre de 2026, 9:41.
+
+
+«Editar inicio» (0.7.0): `data/EditMode.kt` (pura: `IconShape` y `Pinch`, el pellizco con dos dedos), `ui/screens/EditHome.kt` (`pinchIn`, el inicio en pequeño y los cuatro botones) y `EditSheets.kt` (Widgets y Estilo de iconos). La forma de los iconos la aplica `Platform.icon` recortando las capas del icono adaptable; llega a todas las pantallas por `LocalIconShape`.

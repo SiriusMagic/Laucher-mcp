@@ -45,14 +45,18 @@ import com.zirakusa.launcher.ui.theme.HomeColors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+/** «Estilo de iconos» for every icon below it (the launcher provides the chosen one). */
+val LocalIconShape = androidx.compose.runtime.staticCompositionLocalOf { com.zirakusa.launcher.data.IconShape.SYSTEM }
+
 /** The app's icon (loaded in the background), or its first letter on a coloured circle while there is none. */
 @Composable fun AppImage(app: AppEntry, actions: AppActions, size: Dp) {
     val px = with(LocalDensity.current) { size.roundToPx() }
-    val icon by produceState<ImageBitmap?>(null, app.key) { value = withContext(Dispatchers.IO) { actions.icon(app, px) } }
+    val shape = LocalIconShape.current
+    val icon by produceState<ImageBitmap?>(null, app.key, shape) { value = withContext(Dispatchers.IO) { actions.icon(app, px, shape) } }
     Box(Modifier.size(size), contentAlignment = Alignment.Center) {
         val bitmap = icon
         if (bitmap != null) Image(bitmap, null, Modifier.size(size))
-        else Box(Modifier.size(size).clip(RoundedCornerShape(size * 0.3f)).background(placeholder(app)), contentAlignment = Alignment.Center) {
+        else Box(Modifier.size(size).clip(RoundedCornerShape(size * (if (shape.corner >= 0) shape.corner else 0.3f))).background(placeholder(app)), contentAlignment = Alignment.Center) {
             Text(Apps.letter(app).toString(), color = Color.White, fontSize = (size.value * 0.42f).sp, fontWeight = FontWeight.Medium)
         }
     }
