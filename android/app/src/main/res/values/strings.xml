@@ -144,6 +144,13 @@
     <string name="style">Diseño</string>
     <string name="style_classic">Clásico</string>
     <string name="style_list">Lista</string>
+    <string name="style_widgets">Widgets</string>
+    <string name="style_widgets_hint">Reloj de agujas, tus apps de la familia en círculos, la fecha, la próxima alarma, el dock redondo y la búsqueda.</string>
+    <string name="search">Buscar</string>
+    <string name="alarm">Alarma</string>
+    <string name="no_alarms">Sin alarmas</string>
+    <string name="today_short">Hoy</string>
+    <string name="open_clock">Abrir Reloj</string>
     <string name="style_classic_hint">Reloj, fila Familia, búsqueda y dock con iconos.</string>
     <string name="style_list_hint">Reloj, tus favoritas en lista y el alfabeto a la derecha: desliza el dedo por las letras y suelta para abrir esa letra.</string>
     <string name="calendar_preview">Vista previa del calendario</string>

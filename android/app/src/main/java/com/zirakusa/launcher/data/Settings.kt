@@ -40,7 +40,7 @@ class Settings(private val kv: KeyValues) {
     /** «Editar esta vista»: the cards of «Hoy», in order, shown or not. */
     var layout: List<Slot> get() = Cards.parse(kv.get("hoy")); set(v) = kv.put("hoy", Cards.serialize(v))
     /** «Diseño»: Clásico or Lista. */
-    var style: HomeStyle get() = kv.get("style")?.let { runCatching { HomeStyle.valueOf(it) }.getOrNull() } ?: HomeStyle.CLASSIC
+    var style: HomeStyle get() = kv.get("style")?.let { runCatching { HomeStyle.valueOf(it) }.getOrNull() } ?: HomeStyle.WIDGETS
         set(v) = kv.put("style", v.name)
     /** «Vista previa del calendario»: today's first event under the clock. */
     var calendarPreview: Boolean get() = flag("calendar_preview", true); set(v) = setFlag("calendar_preview", v)

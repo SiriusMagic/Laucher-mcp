@@ -144,6 +144,13 @@
     <string name="style">Design</string>
     <string name="style_classic">Classic</string>
     <string name="style_list">List</string>
+    <string name="style_widgets">Widgets</string>
+    <string name="style_widgets_hint">Analog clock, your family apps in circles, the date, the next alarm, a round dock and search.</string>
+    <string name="search">Search</string>
+    <string name="alarm">Alarm</string>
+    <string name="no_alarms">No alarms</string>
+    <string name="today_short">Today</string>
+    <string name="open_clock">Open Clock</string>
     <string name="style_classic_hint">Clock, Family row, search and an icon dock.</string>
     <string name="style_list_hint">Clock, your favourites as a list and the alphabet on the right: slide over the letters and let go to open that letter.</string>
     <string name="calendar_preview">Calendar preview</string>

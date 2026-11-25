@@ -62,10 +62,19 @@ class ScreenshotsTest {
 
     @Test fun homeDrawerAndMenu() {
         show()
+        // «Widgets» (the default): analog clock, round buttons, date card and the next alarm.
+        compose.onNodeWithContentDescription("9:41").assertExists()
+        compose.onNodeWithText("SÁBADO").assertExists()
+        compose.onNodeWithText("Noviembre").assertExists()
+        compose.onNodeWithText("6:02").assertExists()
+        compose.onNodeWithText("LUN · A. M.").assertExists()
+        shot("home")
+        state.changeStyle(HomeStyle.CLASSIC)
         compose.onNodeWithText("9:41").assertExists()
         compose.onNodeWithText("Sábado, 21 de noviembre").assertExists()
         compose.onNodeWithText("lun 6:02 a. m.").assertExists()
-        shot("home")
+        shot("home-classic")
+        state.changeStyle(HomeStyle.WIDGETS)
         compose.onNodeWithContentDescription("Todas las apps").performClick()
         assertEquals(Page.DRAWER, state.page)
         compose.onNodeWithText("Familia").assertExists()

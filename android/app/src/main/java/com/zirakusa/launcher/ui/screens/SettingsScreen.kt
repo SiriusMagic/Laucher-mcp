@@ -102,10 +102,10 @@ enum class Section { MENU, HOME, DRAWER, THEMES, ABOUT }
             Section.HOME -> Group {
                 Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     Text(stringResource(R.string.style), fontSize = 18.sp)
-                    Segmented(listOf(stringResource(R.string.style_classic), stringResource(R.string.style_list)), state.style.ordinal, Modifier.fillMaxWidth()) {
+                    Segmented(listOf(stringResource(R.string.style_widgets), stringResource(R.string.style_classic), stringResource(R.string.style_list)), state.style.ordinal, Modifier.fillMaxWidth()) {
                         state.changeStyle(HomeStyle.entries[it])
                     }
-                    Text(stringResource(if (state.style == HomeStyle.LIST) R.string.style_list_hint else R.string.style_classic_hint), color = HomeColors.Muted, fontSize = 14.sp)
+                    Text(stringResource(when (state.style) { HomeStyle.WIDGETS -> R.string.style_widgets_hint; HomeStyle.CLASSIC -> R.string.style_classic_hint; HomeStyle.LIST -> R.string.style_list_hint }), color = HomeColors.Muted, fontSize = 14.sp)
                 }
                 Divider()
                 SwitchItem(stringResource(R.string.calendar_preview), stringResource(R.string.calendar_preview_hint), state.calendarPreview, onChange = state::changeCalendarPreview)

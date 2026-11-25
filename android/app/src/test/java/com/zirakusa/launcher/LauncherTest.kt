@@ -11,6 +11,7 @@ import com.zirakusa.launcher.data.Slot
 import com.zirakusa.launcher.data.FamilyCard
 import com.zirakusa.launcher.data.Greeting
 import com.zirakusa.launcher.data.Usage
+import com.zirakusa.launcher.data.Widgets
 import com.zirakusa.launcher.ui.Page
 import com.zirakusa.launcher.data.MapValues
 import com.zirakusa.launcher.data.Settings
@@ -147,9 +148,21 @@ class LauncherTest {
         assertTrue(ListStyle.wave(4, 3f, 50f) in 30f..50f); assertTrue(ListStyle.wave(9, 3f, 50f) < 1f)
         assertEquals(0, ListStyle.letterAt(-5f, 100f, 4)); assertEquals(3, ListStyle.letterAt(99f, 100f, 4)); assertEquals(1, ListStyle.letterAt(30f, 100f, 4))
         val state = HomeState(MapValues()).also { it.load(apps) }
-        assertEquals(HomeStyle.CLASSIC, state.style)
+        assertEquals(HomeStyle.WIDGETS, state.style)                                   // the default since 0.6.0
         state.changeStyle(HomeStyle.LIST); state.openAt('R')
         assertEquals(Page.DRAWER, state.page); assertEquals('R', state.jumpTo)
         state.openDrawer(); assertNull(state.jumpTo)
+    }
+
+    @Test fun widgetsRules() {
+        assertEquals(Widgets.Hands(0f, 0f, 0f), Widgets.hands(12, 0, 0))
+        assertEquals(Widgets.Hands(90f, 0f, 0f), Widgets.hands(15, 0, 0))
+        val h = Widgets.hands(9, 41, 30)                                               // 9:41:30
+        assertEquals(270f + 20.5f + 0.25f, h.hour, 1e-3f); assertEquals(246f + 3f, h.minute, 1e-3f); assertEquals(180f, h.second, 1e-3f)
+        // Family first, then the most opened (not in the dock), never twice, at most four.
+        assertEquals(listOf(reloj, notas, camara, nine), Widgets.buttons(listOf(reloj, notas), listOf(notas, chrome, camara, nine), listOf(chrome)))
+        val many = (1..9).map { app("App $it", "p$it") }
+        assertEquals(Widgets.BUTTONS, Widgets.buttons(many, emptyList(), emptyList()).size)
+        assertEquals(emptyList<AppEntry>(), Widgets.buttons(emptyList(), listOf(chrome), listOf(chrome)))
     }
 }

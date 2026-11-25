@@ -1,3 +1,10 @@
+# Inicio 0.6.0
+
+- **Nuevo diseño «Widgets»** (el de fábrica): reloj de agujas con segundero rojo, cuatro apps de la familia en círculos
+  (la última en el color de acento), tarjeta con la fecha, la próxima alarma en un círculo, el dock en círculos y
+  «Buscar» abajo. Tocar el reloj o la alarma abre Reloj; la fecha, Calendario.
+- «Clásico» y «Lista» siguen en Ajustes › Pantalla de inicio › Diseño. Si ya habías elegido uno, se mantiene.
+
 # Inicio 0.5.2
 
 - **Sin puntos rojos**: las apps de la familia ya no llevan un punto en su icono.

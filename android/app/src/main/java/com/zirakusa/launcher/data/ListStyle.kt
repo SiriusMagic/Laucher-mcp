@@ -3,8 +3,11 @@ package com.zirakusa.launcher.data
 import kotlin.math.abs
 import kotlin.math.exp
 
-/** How the home screen looks: «Clásico» (clock, family row, dock) or «Lista» (clock, favourites as a list, alphabet). */
-enum class HomeStyle { CLASSIC, LIST }
+/**
+ * How the home screen looks: «Widgets» (analog clock, round buttons, date and alarm, round dock; the default since
+ * 0.6.0), «Clásico» (clock, family row, dock) or «Lista» (clock, favourites as a list, alphabet). Stored by name.
+ */
+enum class HomeStyle { WIDGETS, CLASSIC, LIST }
 
 /** The «Lista» design's rules. Pure, with tests. */
 object ListStyle {

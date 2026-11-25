@@ -53,7 +53,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 /**
- * The home screen: the clock, date and next alarm on top (tap: Reloj / Calendario), the family apps, «Buscar apps» and
+ * The home screen («Widgets» draws its own content in [WidgetsHome]; this keeps the gestures and menu): the clock, date and next alarm on top (tap: Reloj / Calendario), the family apps, «Buscar apps» and
  * the dock. Swipe up or tap the apps button for the drawer, right for «Hoy»; hold the background for the wallpaper and Ajustes.
  */
 @OptIn(ExperimentalFoundationApi::class)
@@ -69,7 +69,8 @@ import java.time.format.DateTimeFormatter
             onDragEnd = { if (total < -60.dp.toPx()) state.openDrawer() }) { _, dy -> total += dy } }
         .pointerInput(Unit) { var total = 0f; detectHorizontalDragGestures(onDragStart = { total = 0f },
             onDragEnd = { if (total > 60.dp.toPx()) state.page = Page.FEED }) { _, dx -> total += dx } }) {
-        Column(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding()) {
+        if (state.style == com.zirakusa.launcher.data.HomeStyle.WIDGETS) WidgetsHome(state, actions)
+        else Column(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding()) {
             if (state.showClock) Clock(state, actions, ink)
             Spacer(Modifier.weight(1f))
             if (state.family.isNotEmpty()) {
