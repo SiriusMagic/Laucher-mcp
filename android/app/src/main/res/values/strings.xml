@@ -161,11 +161,7 @@
     <string name="sort_usage_hint">Dentro de cada letra, primero las apps que más abres.</string>
     <string name="nothing_pending">No tienes pendientes</string>
     <string name="icon_title">Icono de la app</string>
-    <string name="icon_original">Original</string>
-    <string name="icon_light">Claro</string>
-    <string name="icon_gold">Dorado</string>
-    <string name="icon_blue">Azul</string>
-    <string name="icon_green">Verde</string>
+    <string name="icon_door">Puerta</string>
     <string name="icon_hint">Cambia el icono de la pantalla de inicio. Algunos lanzadores tardan unos segundos en mostrarlo.</string>
     <!-- «Editar inicio» (pinch the home screen with two fingers). -->
     <string name="edit_home">Editar inicio</string>

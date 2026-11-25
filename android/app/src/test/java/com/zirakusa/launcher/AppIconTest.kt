@@ -15,7 +15,7 @@ class AppIconTest {
     private fun state(icon: AppIcon) = context.packageManager.getComponentEnabledSetting(ComponentName(context, "com.zirakusa.launcher.${icon.alias}"))
 
     @Test fun oneIconAtATime() {
-        AppIcon.load(context); assertEquals(AppIcon.ORIGINAL, AppIcon.current)
+        AppIcon.load(context); assertEquals(AppIcon.DOOR, AppIcon.current)
         AppIcon.entries.forEach { icon ->
             AppIcon.apply(context, icon)
             assertEquals(icon, AppIcon.current)
@@ -25,7 +25,17 @@ class AppIconTest {
         }
         AppIcon.entries.forEach { context.packageManager.setComponentEnabledSetting(ComponentName(context, "com.zirakusa.launcher.${it.alias}"),
             PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP) }
-        AppIcon.load(context); assertEquals(AppIcon.ORIGINAL, AppIcon.current)      // never without an icon
-        assertEquals(PackageManager.COMPONENT_ENABLED_STATE_ENABLED, state(AppIcon.ORIGINAL))
+        AppIcon.load(context); assertEquals(AppIcon.DOOR, AppIcon.current)      // never without an icon
+        assertEquals(PackageManager.COMPONENT_ENABLED_STATE_ENABLED, state(AppIcon.DOOR))
+    }
+
+    /** Whoever had a retired colour icon (0.6.0) enabled gets «Puerta», and the old one is turned off. */
+    @Test fun retiredIconsGoBackToDoor() {
+        val pm = context.packageManager
+        AppIcon.entries.forEach { pm.setComponentEnabledSetting(ComponentName(context, "com.zirakusa.launcher.${it.alias}"), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP) }
+        val gold = ComponentName(context, "com.zirakusa.launcher.HomeDorado")
+        pm.setComponentEnabledSetting(gold, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP)
+        AppIcon.load(context)
+        assertEquals(AppIcon.DOOR, AppIcon.current); assertEquals(PackageManager.COMPONENT_ENABLED_STATE_DISABLED, pm.getComponentEnabledSetting(gold))
     }
 }

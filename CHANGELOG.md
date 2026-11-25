@@ -9,7 +9,9 @@
   - **Estilo de iconos**: la forma de todos los iconos (Original, Círculo, Redondeado o Cuadrado) en el inicio, el dock y
     el cajón, y cuántas apps por fila (4 o 5).
   - **Ajustes**: los Ajustes de Inicio.
-- 22 pruebas.
+- **Icono nuevo: la puerta**. Se quitan los cinco iconos de colores anteriores (y su selector en Ajustes); si tenías uno
+  elegido, pasa solo a la puerta.
+- 23 pruebas.
 
 # Inicio 0.6.0
 

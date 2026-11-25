@@ -55,29 +55,31 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity-alias>
+        <!-- Claro (until 0.6.0): retired like the next three. -->
         <activity-alias android:name=".HomeClaro" android:targetActivity=".MainActivity" android:exported="true"
-            android:enabled="false" android:icon="@mipmap/ic_launcher_light">
+            android:enabled="false" android:icon="@mipmap/ic_launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity-alias>
+        <!-- Dorado, Azul and Verde (until 0.6.0): kept, always off, so whoever had one picked gets «Puerta» back ([AppIcon.load]). -->
         <activity-alias android:name=".HomeDorado" android:targetActivity=".MainActivity" android:exported="true"
-            android:enabled="false" android:icon="@mipmap/ic_launcher_gold">
+            android:enabled="false" android:icon="@mipmap/ic_launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity-alias>
         <activity-alias android:name=".HomeAzul" android:targetActivity=".MainActivity" android:exported="true"
-            android:enabled="false" android:icon="@mipmap/ic_launcher_blue">
+            android:enabled="false" android:icon="@mipmap/ic_launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity-alias>
         <activity-alias android:name=".HomeVerde" android:targetActivity=".MainActivity" android:exported="true"
-            android:enabled="false" android:icon="@mipmap/ic_launcher_green">
+            android:enabled="false" android:icon="@mipmap/ic_launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -1,8 +1,4 @@
 <resources>
-    <color name="launcher_background">#000000</color>
-    <!-- The other launcher icons (Ajustes › Icono de la app). -->
-    <color name="launcher_background_light">#F2F2F2</color>
-    <color name="launcher_background_gold">#F5C518</color>
-    <color name="launcher_background_blue">#1565C0</color>
-    <color name="launcher_background_green">#1B5E20</color>
+    <!-- Behind the launcher icon («Puerta», since 0.7.0). -->
+    <color name="launcher_background_door">#153D3D</color>
 </resources>

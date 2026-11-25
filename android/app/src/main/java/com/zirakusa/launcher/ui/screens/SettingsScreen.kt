@@ -136,7 +136,7 @@ enum class Section { MENU, HOME, DRAWER, THEMES, ABOUT }
             }
             Section.THEMES -> {
                 ThemeCard(state.themeMode, state.accent, state::changeTheme, state::changeAccent)
-                IconCard(HomeColors.Card, HomeColors.Text, HomeColors.Muted, HomeColors.Accent, androidx.compose.ui.graphics.Color(0xFF000000))
+                if (com.zirakusa.launcher.AppIcon.entries.size > 1) IconCard(HomeColors.Card, HomeColors.Text, HomeColors.Muted, HomeColors.Accent)
             }
             Section.ABOUT -> Group {
                 Item(stringResource(R.string.privacy), null) { privacy = true }
