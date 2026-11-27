@@ -52,7 +52,7 @@
     <string name="uninstall">Uninstall</string>
     <string name="use_wallpaper">Use the phone\'s wallpaper</string>
     <string name="wallpaper_change">Change wallpaper</string>
-    <string name="mcp_settings_hint">Controlled from Arka: turning it on, allowing it locally and creating tokens.</string>
+    <string name="mcp_settings_hint">Set up local access and redirection to Hub.</string>
     <string name="privacy_text">Inicio has no ads or analytics. It only reads the list of apps that can be opened; the dock and hidden apps are kept on this phone, out of cloud backups. Only if you turn on MCP Mode can the AI you connect with a token see that list and, with a read-and-write token, change the dock through the relay. It never opens or uninstalls apps by itself.</string>
     <string name="mcp_title">MCP mode</string>
     <string name="mcp_online">Connected to the internet</string>
@@ -141,7 +141,7 @@
     <string name="shape_rounded">Rounded</string>
     <string name="shape_square">Square</string>
     <string name="icon_shape_hint">The shape of every icon on the home screen, the dock and the drawer. «Original» keeps each app\'s own.</string>
-    <string name="mcp_no_arka">Install Arka to turn MCP mode on.</string>
+    <string name="mcp_no_arka">Install Arka to manage Hub connections.</string>
     <string name="mcp_cards_on">On in Arka: your AI can see «Hoy», show, hide and order cards and the dock.</string>
     <string name="mcp_cards_off">Turn it on in Arka so your AI arranges «Hoy» and the dock for you.</string>
 </resources>

@@ -89,7 +89,7 @@ enum class Section { MENU, HOME, DRAWER, THEMES, ABOUT }
                 Category(Icons.Outlined.Apps, Color(0xFFF59E42), R.string.drawer, R.string.cat_drawer_hint) { state.section = Section.DRAWER }
                 Category(Icons.Outlined.Dashboard, Color(0xFFEB4D3D), R.string.cat_today, R.string.cat_today_hint) { state.editCards(Page.SETTINGS) }
                 val status = when {
-                    !McpMode.remote -> stringResource(R.string.mcp_status_off)
+                    !McpMode.active -> stringResource(R.string.mcp_status_off)
                     McpMode.state == RelayLink.State.ONLINE -> stringResource(R.string.mcp_online)
                     McpMode.state == RelayLink.State.CONNECTING -> stringResource(R.string.mcp_connecting)
                     else -> stringResource(R.string.mcp_offline)

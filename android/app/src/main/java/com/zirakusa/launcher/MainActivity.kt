@@ -23,6 +23,7 @@ import androidx.lifecycle.lifecycleScope
 import com.zirakusa.launcher.data.AppEntry
 import com.zirakusa.launcher.data.SharedValues
 import com.zirakusa.launcher.mcp.McpMode
+import com.zirakusa.launcher.mcp.showMcpOptions
 import com.zirakusa.launcher.ui.AppActions
 import com.zirakusa.launcher.ui.HomeState
 import com.zirakusa.launcher.ui.LauncherApp
@@ -127,9 +128,5 @@ class MainActivity : ComponentActivity() {
         start(Intent(Settings.ACTION_HOME_SETTINGS))
     }
 
-    /** «Modo MCP» in Ajustes: it is turned on, allowed on the phone and given tokens in Arka, so this opens Arka. */
-    private fun openArka() {
-        val open = packageManager.getLaunchIntentForPackage("com.zirakusa.gatewayhub")
-        if (open != null) startActivity(open) else Toast.makeText(this, R.string.mcp_no_arka, Toast.LENGTH_LONG).show()
-    }
+    private fun openArka() = showMcpOptions(this)
 }

@@ -52,7 +52,7 @@
     <string name="uninstall">Desinstalar</string>
     <string name="use_wallpaper">Usar el fondo de pantalla del teléfono</string>
     <string name="wallpaper_change">Cambiar fondo de pantalla</string>
-    <string name="mcp_settings_hint">Lo controla Arka: activarlo, permitirlo en local y crear tokens.</string>
+    <string name="mcp_settings_hint">Configura el acceso local y la redirección a Hub.</string>
     <string name="privacy_text">Inicio no tiene anuncios ni estadísticas. Solo lee la lista de apps que se pueden abrir; el dock y las apps ocultas se guardan en este teléfono, fuera de las copias en la nube. Solo si activas el Modo MCP, la IA que conectes con un token puede ver esa lista y, si el token es de lectura y escritura, cambiar el dock a través del relay. Nunca abre ni desinstala apps por su cuenta.</string>
     <string name="mcp_title">Modo MCP</string>
     <string name="mcp_online">Conectado a internet</string>
@@ -142,7 +142,7 @@
     <string name="shape_rounded">Redondeado</string>
     <string name="shape_square">Cuadrado</string>
     <string name="icon_shape_hint">La forma de todos los iconos en el inicio, el dock y el cajón. «Original» deja la de cada app.</string>
-    <string name="mcp_no_arka">Instala Arka para activar el Modo MCP.</string>
+    <string name="mcp_no_arka">Instala Arka para administrar los enlaces del Hub.</string>
     <string name="mcp_cards_on">Activado en Arka: tu IA puede ver «Hoy», mostrar, ocultar y ordenar tarjetas y el dock.</string>
     <string name="mcp_cards_off">Actívalo en Arka para que tu IA organice «Hoy» y el dock por ti.</string>
 </resources>

@@ -22,15 +22,17 @@ En la actividad principal:
 ```
 Ser encontrada no enciende nada. El módulo es el prefijo de sus herramientas (`clock_`, `calendar_`, `launcher_`…).
 
-## 3. Modo MCP (lo controla Arka)
-- Ninguna app tiene pantalla propia de Modo MCP: **Arka › MCP** lo **activa** (todas o una a una), lo **permite en
-  local** (Lucía y las reglas de sentimiento usan las herramientas en el teléfono, sin internet) y **crea los tokens**
-  de cada IA (Agentes del hub). En Ajustes de cada app, «Modo MCP» solo muestra el estado y abre Arka.
+## 3. Modo MCP
+- En **Ajustes › Modo MCP**, cada app ofrece **Activar MCP**, **Permitir MCP local** y **Redireccionar a Hub**.
+  La redirección se activa cuando falta la preferencia y conserva los valores ya guardados. Puede funcionar
+  aunque **Activar MCP** esté apagado. El acceso local se autoriza por separado en la app y en **Arka › MCP**.
 - Canal con firma `content://${applicationId}.hublink` (permiso `com.zirakusa.gatewayhub.permission.LINK` y
-  `checkSignatures` en el proveedor): `link` (el enlace del hub, solo con el enlace público encendido), `connect` /
-  `disconnect` (enciende o apaga el enlace público; el toque en Arka es el consentimiento), `status` (`remote`,
-  `state`) y `tool` (una petición JSON-RPC para Lucía, en el teléfono).
-- Apagado de fábrica. Mismo relay público de Stone (WebSocket saliente, solo https/wss); un id de dispositivo por app.
+  `checkSignatures`): `link` devuelve el enlace, `connect` y `disconnect` cambian la redirección,
+  `status` informa `remote`, `enabled`, `localMcp` y `state`, y `tool` recibe la petición JSON-RPC local.
+- La credencial de Arka se sirve cuando la redirección está encendida. Se usa el mismo relay de Stone
+  (WebSocket saliente, solo HTTPS/WSS), con un ID de dispositivo por app.
+- La prueba de conexión usa un ID JSON-RPC compartido. El panel de la app muestra el último ID recibido.
+  Los informes automáticos se habilitan en Diagnóstico MCP de Arka.
 - Un solo token por app, el de Arka: prefijo propio de 3 letras + 256 bits, cifrado con el Keystore (`SecretBox`). Al
   actualizar se conserva el de «Redireccionar a Hub» (el enlace del hub sigue valiendo); los LLM/Hub de antes se borran.
 - `McpHandler`: JSON-RPC (Streamable HTTP), token comparado en tiempo constante, 120 peticiones por minuto, 1 MiB máx.
@@ -50,7 +52,7 @@ Ser encontrada no enciende nada. El módulo es el prefijo de sus herramientas (`
 
 ## 5. Privacidad
 - Sin anuncios ni estadísticas. `allowBackup=false` y reglas que excluyen todo de las copias.
-- Internet solo para el Modo MCP. Nada sale del teléfono si el usuario no lo activa en Arka.
+- El relay de MCP requiere la redirección de la app y una credencial autorizada. El acceso MCP local funciona en el teléfono.
 
 ## 6. Versiones
 - `versionCode` y `versionName` suben juntos; el APK firmado se copia a `android/<App>-<versión>.apk` (se borra el
